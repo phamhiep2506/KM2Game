@@ -1,6 +1,7 @@
+package KM2Game;
+
 import android.util.Log;
 import android.view.InputEvent;
-import android.view.MotionEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
