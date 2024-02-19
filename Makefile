@@ -8,6 +8,3 @@ build:
 
 clean:
 	rm -rf libs obj
-
-debug:
-	adb push libs/arm64-v8a/KM2Game /data/local/tmp
