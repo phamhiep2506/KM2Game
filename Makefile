@@ -1,10 +1,8 @@
-ROOT_DIR = $(shell pwd)
-ANDROID_NDK = ~/.android_sdk/ndk/26.1.10909125
-
 all: clean build
 
 build:
-	$(ANDROID_NDK)/ndk-build NDK_PROJECT_PATH=$(ROOT_DIR) NDK_APPLICATION_MK=$(ROOT_DIR)/Application.mk
+	javac -cp $(ANDROID_HOME)/platforms/android-34/android.jar KM2Game.java
+	$(ANDROID_HOME)/build-tools/34.0.0/d8 --lib $(ANDROID_HOME)/platforms/android-34/android.jar KM2Game.class
 
 clean:
-	rm -rf libs obj
+	rm -rf KM2Game.class classes.dex
