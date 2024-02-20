@@ -48,11 +48,13 @@ Java_KM2Game_KM2Game_startConvert(JNIEnv *env, jobject obj) {
             case EV_REL:
                switch(ev.code) {
                   case REL_X:
-                     last_x = last_x + ev.value;
+                     last_x = last_x + (float)ev.value;
+                     __android_log_print(ANDROID_LOG_INFO, "KM2Game", "X %f", last_x);
                      (*env)->CallVoidMethod(env, obj, injectEvent, last_x, last_y, 2, 1);
                      break;
                   case REL_Y:
-                     last_y = last_y + ev.value;
+                     last_y = last_y + (float)ev.value;
+                     __android_log_print(ANDROID_LOG_INFO, "KM2Game", "Y %f", last_y);
                      (*env)->CallVoidMethod(env, obj, injectEvent, last_x, last_y, 2, 1);
                      break;
                }
