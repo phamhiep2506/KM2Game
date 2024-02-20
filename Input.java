@@ -3,19 +3,17 @@ package KM2Game;
 import android.util.Log;
 import android.os.SystemClock;
 import android.view.InputDevice;
+import android.view.InputEvent;
 import android.view.MotionEvent;
+import android.hardware.input.InputManager;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-public class Controller {
+public class Input {
     private long lastTouchDown;
     private final PointersState pointersState = new PointersState();
     private final MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[PointersState.MAX_POINTERS];
     private final MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[PointersState.MAX_POINTERS];
-
-    static Method injectInputEventMethod;
-    static Object inputManager;
 
     private void initPointers() {
         for(int i = 0; i < PointersState.MAX_POINTERS; ++i) {
@@ -31,7 +29,7 @@ public class Controller {
         }
     }
 
-    public Controller() {
+    public Input() {
         initPointers();
     }
 
@@ -63,40 +61,14 @@ public class Controller {
             }
         }
 
-        MotionEvent event = MotionEvent.obtain(lastTouchDown, now, action, pointerCount, pointerProperties, pointerCoords,
-                0, 0, 1f, 1f,
-                0, 0, source, 0);
+        MotionEvent event = MotionEvent.obtain(lastTouchDown, now, action, pointerCount, pointerProperties, pointerCoords, 0, 0, 1f, 1f, 0, 0, source, 0);
 
         try {
-            injectInputEventMethod.invoke(inputManager, event, 0);
-        } catch(IllegalAccessException | InvocationTargetException e) {
-            Log.e("KM2Game", "Error inject input event method", e);
+            InputManager.class.getMethod("injectInputEvent", InputEvent.class, Integer.TYPE).invoke(InputManager.class.getMethod("getInstance").invoke(null), event, 0);
+        } catch(InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            Log.e("KM2Game", "Error inject event", e);
         }
 
-    }
-
-    static {
-        String methodName = "getInstance";
-        Object[] objArr = new Object[0];
-        try {
-            Class<?> inputManagerClass;
-            inputManagerClass = android.hardware.input.InputManager.class;
-
-            inputManager = inputManagerClass.getDeclaredMethod(methodName)
-                .invoke(null, objArr);
-            //Make MotionEvent.obtain() method accessible
-            methodName = "obtain";
-            MotionEvent.class.getDeclaredMethod(methodName)
-                 .setAccessible(true);
-
-            //Get the reference to injectInputEvent method
-            methodName = "injectInputEvent";
-
-            injectInputEventMethod = inputManagerClass.getMethod(methodName, android.view.InputEvent.class, Integer.TYPE);
-
-        } catch(Exception e) {
-            Log.e("KM2Game", "Error invoke method inject input event", e);
-        }
     }
 
 }

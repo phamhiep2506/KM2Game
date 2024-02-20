@@ -6,16 +6,13 @@ public class KM2Game {
 
     public static void main(String[] args) throws InterruptedException {
 
-    Controller controller = new Controller();
+    Input input = new Input();
 
-    controller.injectTouch(MotionEvent.ACTION_DOWN, 1, 1.0f, 1170.0f, 540.0f);
-    float i = 1160.0f;
-    while(i > -5000.0f) {
-        Thread.sleep(10);
-        i = i - 10.0f;
-        controller.injectTouch(MotionEvent.ACTION_MOVE, 1, 1.0f, i, 540.0f);
-    }
-    controller.injectTouch(MotionEvent.ACTION_UP, 1, 1.0f, 1170.0f, 540.0f);
+    input.injectTouch(MotionEvent.ACTION_DOWN, 1, 1.0f, 250.0f, 500.0f);
+    input.injectTouch(MotionEvent.ACTION_DOWN, 2, 1.0f, 800.0f, 500.0f);
+
+    input.injectTouch(MotionEvent.ACTION_UP, 1, 1.0f, 250.0f, 500.0f);
+    input.injectTouch(MotionEvent.ACTION_UP, 2, 1.0f, 800.0f, 500.0f);
 
     }
 
