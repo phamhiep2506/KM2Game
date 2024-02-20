@@ -3,15 +3,12 @@ package KM2Game;
 import android.util.Log;
 import android.os.SystemClock;
 import android.view.InputDevice;
-import android.view.InputEvent;
 import android.view.MotionEvent;
-import android.hardware.input.InputManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Input {
-
+public class Controller {
     private long lastTouchDown;
     private final PointersState pointersState = new PointersState();
     private final MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[PointersState.MAX_POINTERS];
@@ -19,8 +16,6 @@ public class Input {
 
     static Method injectInputEventMethod;
     static Object inputManager;
-    static int inputSource = InputDevice.SOURCE_TOUCHSCREEN;
-    public int pointerCount;
 
     private void initPointers() {
         for(int i = 0; i < PointersState.MAX_POINTERS; ++i) {
@@ -36,7 +31,7 @@ public class Input {
         }
     }
 
-    public Input() {
+    public Controller() {
         initPointers();
     }
 
@@ -53,8 +48,9 @@ public class Input {
         pointer.setPressure(pressure);
         pointer.setUp(action == MotionEvent.ACTION_UP);
 
-        pointerCount = pointersState.update(pointerProperties, pointerCoords);
+        int source = InputDevice.SOURCE_TOUCHSCREEN;
 
+        int pointerCount = pointersState.update(pointerProperties, pointerCoords);
         if(pointerCount == 1) {
             if(action == MotionEvent.ACTION_DOWN) {
                 lastTouchDown = now;
@@ -67,14 +63,14 @@ public class Input {
             }
         }
 
-        MotionEvent motionEvent = MotionEvent.obtain(lastTouchDown, now, action, pointerCount, pointerProperties, pointerCoords,
+        MotionEvent event = MotionEvent.obtain(lastTouchDown, now, action, pointerCount, pointerProperties, pointerCoords,
                 0, 0, 1f, 1f,
-                0, 0, inputSource, 0);
+                0, 0, source, 0);
+
         try {
-            injectInputEventMethod.invoke(inputManager, motionEvent, 0);
+            injectInputEventMethod.invoke(inputManager, event, 0);
         } catch(IllegalAccessException | InvocationTargetException e) {
             Log.e("KM2Game", "Error inject input event method", e);
-            e.printStackTrace(System.out);
         }
 
     }
@@ -89,18 +85,17 @@ public class Input {
             inputManager = inputManagerClass.getDeclaredMethod(methodName)
                 .invoke(null, objArr);
             //Make MotionEvent.obtain() method accessible
-             methodName = "obtain";
-             MotionEvent.class.getDeclaredMethod(methodName)
+            methodName = "obtain";
+            MotionEvent.class.getDeclaredMethod(methodName)
                  .setAccessible(true);
 
-             //Get the reference to injectInputEvent method
-             methodName = "injectInputEvent";
+            //Get the reference to injectInputEvent method
+            methodName = "injectInputEvent";
 
             injectInputEventMethod = inputManagerClass.getMethod(methodName, android.view.InputEvent.class, Integer.TYPE);
 
         } catch(Exception e) {
             Log.e("KM2Game", "Error invoke method inject input event", e);
-            e.printStackTrace(System.out);
         }
     }
 
