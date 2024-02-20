@@ -6,10 +6,13 @@ public class KM2Game {
 
     public static void main(String[] args) {
 
-        System.out.println("Hello, World!");
+        Input input = new Input();
 
-        Input.injectTouch(MotionEvent.ACTION_DOWN, 0, 10, 540, 1170);
-        Input.injectTouch(MotionEvent.ACTION_UP, 0, 0, 540, 1170);
+        input.injectTouch(MotionEvent.ACTION_DOWN, 1, 1.0f, 1970, 800);
+
+        input.injectTouch(MotionEvent.ACTION_MOVE, 1, 1.0f, 1950 , 800);
+
+        // input.injectTouch(MotionEvent.ACTION_UP, 1, 0.0f, 1950, 800);
 
     }
 
