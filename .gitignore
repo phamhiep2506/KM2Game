@@ -1,2 +1,5 @@
+.ccls-cache
 *.class
 classes.dex
+libs
+obj
