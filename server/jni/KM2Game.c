@@ -11,20 +11,8 @@
 #define MOUSE_DEVPATH "/dev/input/event5"
 
 int mouse_fd;
-float last_x = 1170.0f;
-float last_y = 540.0f;
-
-int open_devpath(char *path) {
-   int fd;
-
-   fd = open(path, O_RDONLY | O_NONBLOCK);
-
-   if(fd < 0) {
-      fprintf(stderr, "Failed to open %s: %s\n", path, strerror(errno));
-      exit(EXIT_FAILURE);
-   }
-   return fd;
-}
+float last_x = (float)1170;
+float last_y = (float)540;
 
 JNIEXPORT void JNICALL
 Java_KM2Game_KM2Game_startConvert(JNIEnv *env, jobject obj) {
@@ -35,12 +23,13 @@ Java_KM2Game_KM2Game_startConvert(JNIEnv *env, jobject obj) {
    jmethodID injectEvent = (*env)->GetMethodID(env, cls, "injectEvent", "(FFII)V");
 
    /* start mouse aim */
-   (*env)->CallVoidMethod(env, obj, injectEvent, last_x, last_y, 1, 1);
-   /* (*env)->CallVoidMethod(env, obj, injectEvent, (float)540, (float)1170, 0, 1); */
-
    struct input_event ev;
-   mouse_fd = open_devpath(MOUSE_DEVPATH);
+   mouse_fd = open(MOUSE_DEVPATH, O_RDONLY | O_NONBLOCK);
+   if(mouse_fd < 0) {
+      __android_log_print(ANDROID_LOG_INFO, "KM2Game", "Failed to open %s", MOUSE_DEVPATH);
+   }
 
+   (*env)->CallVoidMethod(env, obj, injectEvent, last_x, last_y, 1, 1);
    while(1) {
       /* mouse event */
       if(read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
