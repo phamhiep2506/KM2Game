@@ -8,11 +8,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MOUSE_DEVPATH "/dev/input/event7"
+#define MOUSE_DEVPATH "/dev/input/event5"
 
 int mouse_fd;
-float last_x = (float)1170;
-float last_y = (float)540;
+float last_x = (float)540;
+float last_y = (float)1170;
 
 JNIEXPORT void JNICALL
 Java_KM2Game_KM2Game_startConvert(JNIEnv *env, jobject obj) {
