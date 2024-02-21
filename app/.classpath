@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.android_sdk/build-tools/34.0.0/core-lambda-stubs.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.android_sdk/platforms/android-34/android.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debugAndroidTest/R.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/release/R.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_app_classes_jar/debug/classes.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/javac/debug/classes"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/javac/debugAndroidTest/classes"/>
+	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/javac/release/classes"/>
+	<classpathentry kind="lib" path="."/>
+</classpath>
