@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MOUSE_DEVPATH "/dev/input/event5"
+#define MOUSE_DEVPATH "/dev/input/event7"
 
 int mouse_fd;
 float last_x = (float)1170;
@@ -38,12 +38,12 @@ Java_KM2Game_KM2Game_startConvert(JNIEnv *env, jobject obj) {
                switch(ev.code) {
                   case REL_X:
                      last_x = last_x + (float)ev.value;
-                     __android_log_print(ANDROID_LOG_INFO, "KM2Game", "X %f", last_x);
+                     __android_log_print(ANDROID_LOG_INFO, "KM2Game", "X %f Y %f", last_x, last_y);
                      (*env)->CallVoidMethod(env, obj, injectEvent, last_x, last_y, 2, 1);
                      break;
                   case REL_Y:
                      last_y = last_y + (float)ev.value;
-                     __android_log_print(ANDROID_LOG_INFO, "KM2Game", "Y %f", last_y);
+                     __android_log_print(ANDROID_LOG_INFO, "KM2Game", "X %f Y %f", last_x, last_y);
                      (*env)->CallVoidMethod(env, obj, injectEvent, last_x, last_y, 2, 1);
                      break;
                }
