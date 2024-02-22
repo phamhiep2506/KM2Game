@@ -17,7 +17,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         btnPointerCapture = (Button)findViewById(R.id.btnPointerCapture);
         btnPointerCapture.setOnClickListener(this);
-        onPointerCaptureChange(true)
+
     }
 
     @Override
