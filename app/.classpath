@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.1.0/8007981f7d7540d89cd18471b8e5dcd2b4f99167/common-1.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.1.0/edf3f7bfb84a7521d0599efa3b0113a0ee90f85/common-1.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/27.1.1/39ded76b5e1ce1c5b2688e1d25cdc20ecee32007/support-annotations-27.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/0c30c49616bdec4ee8078e8210ee7df4/transformed/viewmodel-1.1.0-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/1715d1e73f1f674da08b9e7b58e567ca/transformed/support-compat-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/21bda6288a51c4d7f01947d8460a68da/transformed/support-fragment-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/3d5fecef5e94c36062f39f8f95d98fca/transformed/livedata-core-1.1.0-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/50cd015970e642752ae681b7fad861a5/transformed/runtime-1.1.0-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/5edc6ad15546d320a8d3a04302953b0f/transformed/appcompat-v7-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/9041ecac8df69ce704d671cc8f0b280d/transformed/animated-vector-drawable-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/9d06f4683992b5693a61b030ede57214/transformed/support-core-ui-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/b1c531a6a524c3d0a160b2e00e3189f9/transformed/support-core-utils-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/f80cdaba793b2f40faf2b7c59af8109d/transformed/support-vector-drawable-27.1.1-api.jar"/>
+	<classpathentry kind="lib" path="/home/phamhiep/.gradle/caches/transforms-4/fe505ff5a89e13a28de68b292e34a5b3/transformed/runtime-1.1.0-api.jar"/>
 	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar"/>
 	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debugAndroidTest/R.jar"/>
 	<classpathentry kind="lib" path="/home/phamhiep/Projects/KM2Game/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/release/R.jar"/>
