@@ -19,9 +19,14 @@
 #define MOUSE_RIGHT_POSITION_X 550
 #define MOUSE_RIGHT_POSITION_Y 150
 
+#define JOYSTICK_POSITION_X 800
+#define JOYSTICK_POSITION_Y 1875
+#define JOYSTICK_RADIUS 250
+
 #define MOUSE_MOVE_SLOT 0
 #define MOUSE_LEFT_SLOT 1
 #define MOUSE_RIGHT_SLOT 2
+#define JOYSTICK_SLOT 3
 
 int touch_fd, mouse_fd, keyboard_fd;
 int last_abs_mt_position_x = MOUSE_MOVE_POSITION_X;
@@ -114,7 +119,62 @@ void reset_mouse(int fd) {
                last_abs_mt_position_y);
 }
 
-void convert_keyboard_event(int fd, struct input_event *ev) {}
+void convert_joystick_event(int fd, struct input_event *ev) {
+    switch(ev->type) {
+    case EV_KEY:
+        switch(ev->code) {
+        case KEY_W:
+            switch(ev->value) {
+                case 1:
+                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+                    touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS);
+                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    break;
+                case 0:
+                    touch_up(fd, JOYSTICK_SLOT);
+                    break;
+            }
+            break;
+        case KEY_S:
+            switch(ev->value) {
+                case 1:
+                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+                    touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS);
+                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    break;
+                case 0:
+                    touch_up(fd, JOYSTICK_SLOT);
+                    break;
+            }
+            break;
+        case KEY_A:
+            switch(ev->value) {
+                case 1:
+                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+                    touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
+                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    break;
+                case 0:
+                    touch_up(fd, JOYSTICK_SLOT);
+                    break;
+            }
+            break;
+        case KEY_D:
+            switch(ev->value) {
+                case 1:
+                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+                    touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
+                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    break;
+                case 0:
+                    touch_up(fd, JOYSTICK_SLOT);
+                    break;
+            }
+            break;
+        }
+        break;
+    }
+}
 
 void convert_mouse_event(int fd, struct input_event *ev) {
     switch (ev->type) {
@@ -185,13 +245,17 @@ int main(int argc, char *argv[]) {
     } else {
         touch_fd = open_devpath(argv[1]);
         mouse_fd = open_devpath(argv[2]);
-        /* keyboard_fd = open_devpath(argv[3]); */
+        keyboard_fd = open_devpath(argv[3]);
 
         start_mouse(touch_fd);
 
         while (1) {
             if (read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
                 convert_mouse_event(touch_fd, &ev);
+            }
+
+            if(read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {
+                convert_joystick_event(touch_fd, &ev);
             }
         }
     }
