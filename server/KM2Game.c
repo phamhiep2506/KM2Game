@@ -8,17 +8,20 @@
 
 #define TOUCH_DEVPATH "/dev/input/event2"
 #define MOUSE_DEVPATH "/dev/input/event5"
-#define CENTER_X 540
-#define CENTER_Y 1170
+
+#define MAX_ABS_MT_SLOT 9
+#define MAX_ABS_MT_POSITION_X 1079
+#define MAX_ABS_MT_POSITION_Y 2339
+#define MAX_ABS_MT_TRACKING_ID 65535
+
+#define MOUSE_MOVE_SLOT 0
+#define MOUSE_LEFT_SLOT 1
+#define MOUSE_RIGHT_SLOT 2
 
 int touch_fd, mouse_fd;
-int last_x = CENTER_X;
-int last_y = CENTER_Y;
-int min_x = 0;
-int min_y = 0;
-int max_x = 1080;
-int max_y = 2340;
-int tracking_id = 0;
+int last_abs_mt_position_x = 0;
+int last_abs_mt_position_y = 0;
+int abs_mt_tracking_id = 0;
 
 void write_event(int fd, int type, int code, int value) {
    struct input_event ev;
@@ -45,72 +48,49 @@ int open_devpath(char *path)
     return fd;
 }
 
-void mouse_aim_start(int fd) {
-    tracking_id = tracking_id + 1;
+int get_abs_mt_tracking_id() {
+    abs_mt_tracking_id = abs_mt_tracking_id + 1;
 
-    write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, tracking_id);
+    if(abs_mt_tracking_id > MAX_ABS_MT_TRACKING_ID) {
+        abs_mt_tracking_id = 0;
+    }
+
+    return abs_mt_tracking_id;
+}
+
+void touch_down(int fd, int abs_slot, int abs_x, int abs_y) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, abs_slot);
+    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, get_abs_mt_tracking_id());
     write_event(fd, EV_KEY, BTN_TOUCH, 1);
-    write_event(fd, EV_ABS, ABS_MT_POSITION_X, CENTER_X);
-    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, CENTER_Y);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_X, abs_x);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, abs_y);
     write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
     write_event(fd, EV_SYN, SYN_REPORT, 0);
 }
 
-void mouse_aim_reset(int fd) {
-   write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-   write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
-   write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
-   write_event(fd, EV_KEY, BTN_TOUCH, 0);
-   write_event(fd, EV_SYN, SYN_REPORT, 0);
-}
-
-void mouse_btn_left_down(int fd) {
-    tracking_id = tracking_id + 1;
-
-    write_event(fd, EV_ABS, ABS_MT_SLOT, 1);
-    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, tracking_id);
-    write_event(fd, EV_KEY, BTN_TOUCH, 1);
-    write_event(fd, EV_ABS, ABS_MT_POSITION_X, 800);
-    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, 370);
-    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
-    write_event(fd, EV_SYN, SYN_REPORT, 0);
-}
-
-void mouse_btn_left_up(int fd) {
-    write_event(fd, EV_ABS, ABS_MT_SLOT, 1);
+void touch_up(int fd, int abs_slot) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, abs_slot);
     write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
     write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
     write_event(fd, EV_KEY, BTN_TOUCH, 0);
     write_event(fd, EV_SYN, SYN_REPORT, 0);
-    mouse_aim_reset(fd);
-    mouse_aim_start(fd);
-    last_x = CENTER_X;
-    last_y = CENTER_Y;
 }
 
-void mouse_btn_right_down(int fd) {
-    tracking_id = tracking_id + 1;
-
-    write_event(fd, EV_ABS, ABS_MT_SLOT, 2);
-    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, tracking_id);
-    write_event(fd, EV_KEY, BTN_TOUCH, 1);
-    write_event(fd, EV_ABS, ABS_MT_POSITION_X, 550);
-    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, 160);
-    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
-    write_event(fd, EV_SYN, SYN_REPORT, 0);
+void touch_move_x(int fd, int abs_slot, int abs_x) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, abs_slot);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_X, abs_x);
 }
 
-void mouse_btn_right_up(int fd) {
-    write_event(fd, EV_ABS, ABS_MT_SLOT, 2);
-    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
-    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
-    write_event(fd, EV_KEY, BTN_TOUCH, 0);
-    write_event(fd, EV_SYN, SYN_REPORT, 0);
-    mouse_aim_reset(fd);
-    mouse_aim_start(fd);
-    last_x = CENTER_X;
-    last_y = CENTER_Y;
+void touch_move_y(int fd, int abs_slot, int abs_y) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, abs_slot);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, abs_y);
+}
+
+void reset_mouse_aim(int fd) {
+    touch_up(fd, MOUSE_MOVE_SLOT);
+    last_abs_mt_position_x = MAX_ABS_MT_POSITION_X / 2;
+    last_abs_mt_position_y = MAX_ABS_MT_POSITION_Y / 2;
+    touch_down(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x , last_abs_mt_position_y);
 }
 
 void convert_mouse_event(int fd, struct input_event *ev) {
@@ -120,20 +100,22 @@ void convert_mouse_event(int fd, struct input_event *ev) {
                 case BTN_LEFT:
                     switch(ev->value) {
                         case 1:
-                            mouse_btn_left_down(fd);
+                            touch_down(fd, MOUSE_LEFT_SLOT, 800, 380);
                             break;
                         case 0:
-                            mouse_btn_left_up(fd);
+                            touch_up(fd, MOUSE_LEFT_SLOT);
+                            reset_mouse_aim(fd);
                             break;
                     }
                     break;
                 case BTN_RIGHT:
                     switch(ev->value) {
                         case 1:
-                            mouse_btn_right_down(fd);
+                            touch_down(fd, MOUSE_RIGHT_SLOT, 550, 150);
                             break;
                         case 0:
-                            mouse_btn_right_up(fd);
+                            touch_up(fd, MOUSE_RIGHT_SLOT);
+                            reset_mouse_aim(fd);
                             break;
                     }
                     break;
@@ -142,31 +124,27 @@ void convert_mouse_event(int fd, struct input_event *ev) {
         case EV_REL:
             switch(ev->code) {
                 case REL_X:
-                    last_y = last_y - ev->value;
-                    if(last_y > max_y || last_y < min_y) {
-                        mouse_aim_reset(fd);
-                        mouse_aim_start(fd);
-                        last_x = CENTER_X;
-                        last_y = CENTER_Y;
-                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-                        write_event(fd, EV_ABS, ABS_MT_POSITION_Y, last_y);
+                    last_abs_mt_position_y = last_abs_mt_position_y - ev->value;
+                    if(last_abs_mt_position_y > MAX_ABS_MT_POSITION_Y || last_abs_mt_position_y < 0) {
+                        touch_up(fd, MOUSE_MOVE_SLOT);
+                        touch_down(fd, MOUSE_MOVE_SLOT, MAX_ABS_MT_POSITION_X / 2, MAX_ABS_MT_POSITION_Y / 2);
+                        last_abs_mt_position_x = MAX_ABS_MT_POSITION_X / 2;
+                        last_abs_mt_position_y = MAX_ABS_MT_POSITION_Y / 2;
+                        touch_move_y(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_y);
                     } else {
-                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-                        write_event(fd, EV_ABS, ABS_MT_POSITION_Y, last_y);
+                        touch_move_y(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_y);
                     }
                     break;
                 case REL_Y:
-                    last_x = last_x + ev->value;
-                    if(last_x > max_x || last_x < min_x) {
-                        mouse_aim_reset(fd);
-                        mouse_aim_start(fd);
-                        last_x = CENTER_X;
-                        last_y = CENTER_Y;
-                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-                        write_event(fd, EV_ABS, ABS_MT_POSITION_X, last_x);
+                    last_abs_mt_position_x = last_abs_mt_position_x + ev->value;
+                    if(last_abs_mt_position_x > MAX_ABS_MT_POSITION_X || last_abs_mt_position_x < 0) {
+                        touch_up(fd, MOUSE_MOVE_SLOT);
+                        touch_down(fd, MOUSE_MOVE_SLOT, MAX_ABS_MT_POSITION_X / 2, MAX_ABS_MT_POSITION_Y / 2);
+                        last_abs_mt_position_x = MAX_ABS_MT_POSITION_X / 2;
+                        last_abs_mt_position_y = MAX_ABS_MT_POSITION_Y / 2;
+                        touch_move_x(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x);
                     } else {
-                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-                        write_event(fd, EV_ABS, ABS_MT_POSITION_X, last_x);
+                        touch_move_x(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x);
                     }
                     break;
             }
@@ -185,7 +163,7 @@ int main() {
    touch_fd = open_devpath(TOUCH_DEVPATH);
    mouse_fd = open_devpath(MOUSE_DEVPATH);
 
-   mouse_aim_start(touch_fd);
+   touch_down(touch_fd, MOUSE_MOVE_SLOT, MAX_ABS_MT_POSITION_X / 2, MAX_ABS_MT_POSITION_Y / 2);
 
    while(1) {
         if(read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
