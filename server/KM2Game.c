@@ -18,6 +18,7 @@ int min_x = 0;
 int min_y = 0;
 int max_x = 1080;
 int max_y = 2340;
+int tracking_id = 0;
 
 void write_event(int fd, int type, int code, int value) {
    struct input_event ev;
@@ -45,13 +46,15 @@ int open_devpath(char *path)
 }
 
 void mouse_aim_start(int fd) {
-   write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
-   write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, 100);
-   write_event(fd, EV_KEY, BTN_TOUCH, 1);
-   write_event(fd, EV_ABS, ABS_MT_POSITION_X, CENTER_X);
-   write_event(fd, EV_ABS, ABS_MT_POSITION_Y, CENTER_Y);
-   write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
-   write_event(fd, EV_SYN, SYN_REPORT, 0);
+    tracking_id = tracking_id + 1;
+
+    write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
+    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, tracking_id);
+    write_event(fd, EV_KEY, BTN_TOUCH, 1);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_X, CENTER_X);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, CENTER_Y);
+    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
+    write_event(fd, EV_SYN, SYN_REPORT, 0);
 }
 
 void mouse_aim_reset(int fd) {
@@ -60,11 +63,82 @@ void mouse_aim_reset(int fd) {
    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
    write_event(fd, EV_KEY, BTN_TOUCH, 0);
    write_event(fd, EV_SYN, SYN_REPORT, 0);
+}
 
+void mouse_btn_left_down(int fd) {
+    tracking_id = tracking_id + 1;
+
+    write_event(fd, EV_ABS, ABS_MT_SLOT, 1);
+    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, tracking_id);
+    write_event(fd, EV_KEY, BTN_TOUCH, 1);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_X, 800);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, 370);
+    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
+    write_event(fd, EV_SYN, SYN_REPORT, 0);
+}
+
+void mouse_btn_left_up(int fd) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, 1);
+    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
+    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
+    write_event(fd, EV_KEY, BTN_TOUCH, 0);
+    write_event(fd, EV_SYN, SYN_REPORT, 0);
+    mouse_aim_reset(fd);
+    mouse_aim_start(fd);
+    last_x = CENTER_X;
+    last_y = CENTER_Y;
+}
+
+void mouse_btn_right_down(int fd) {
+    tracking_id = tracking_id + 1;
+
+    write_event(fd, EV_ABS, ABS_MT_SLOT, 2);
+    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, tracking_id);
+    write_event(fd, EV_KEY, BTN_TOUCH, 1);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_X, 550);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, 160);
+    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
+    write_event(fd, EV_SYN, SYN_REPORT, 0);
+}
+
+void mouse_btn_right_up(int fd) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, 2);
+    write_event(fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
+    write_event(fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
+    write_event(fd, EV_KEY, BTN_TOUCH, 0);
+    write_event(fd, EV_SYN, SYN_REPORT, 0);
+    mouse_aim_reset(fd);
+    mouse_aim_start(fd);
+    last_x = CENTER_X;
+    last_y = CENTER_Y;
 }
 
 void convert_mouse_event(int fd, struct input_event *ev) {
     switch(ev->type) {
+        case EV_KEY:
+            switch(ev->code) {
+                case BTN_LEFT:
+                    switch(ev->value) {
+                        case 1:
+                            mouse_btn_left_down(fd);
+                            break;
+                        case 0:
+                            mouse_btn_left_up(fd);
+                            break;
+                    }
+                    break;
+                case BTN_RIGHT:
+                    switch(ev->value) {
+                        case 1:
+                            mouse_btn_right_down(fd);
+                            break;
+                        case 0:
+                            mouse_btn_right_up(fd);
+                            break;
+                    }
+                    break;
+            }
+            break;
         case EV_REL:
             switch(ev->code) {
                 case REL_X:
@@ -74,8 +148,10 @@ void convert_mouse_event(int fd, struct input_event *ev) {
                         mouse_aim_start(fd);
                         last_x = CENTER_X;
                         last_y = CENTER_Y;
+                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
                         write_event(fd, EV_ABS, ABS_MT_POSITION_Y, last_y);
                     } else {
+                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
                         write_event(fd, EV_ABS, ABS_MT_POSITION_Y, last_y);
                     }
                     break;
@@ -86,8 +162,10 @@ void convert_mouse_event(int fd, struct input_event *ev) {
                         mouse_aim_start(fd);
                         last_x = CENTER_X;
                         last_y = CENTER_Y;
+                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
                         write_event(fd, EV_ABS, ABS_MT_POSITION_X, last_x);
                     } else {
+                        write_event(fd, EV_ABS, ABS_MT_SLOT, 0);
                         write_event(fd, EV_ABS, ABS_MT_POSITION_X, last_x);
                     }
                     break;
