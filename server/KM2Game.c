@@ -1,10 +1,10 @@
+#include <errno.h>
+#include <fcntl.h>
 #include <linux/input-event-codes.h>
 #include <linux/input.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <errno.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define MAX_ABS_MT_SLOT 9
@@ -29,19 +29,18 @@ int last_abs_mt_position_y = MOUSE_MOVE_POSITION_Y;
 int abs_mt_tracking_id = 0;
 
 void write_event(int fd, int type, int code, int value) {
-   struct input_event ev;
+    struct input_event ev;
 
-   memset(&ev, 0, sizeof(ev));
+    memset(&ev, 0, sizeof(ev));
 
-   ev.type = type;
-   ev.code = code;
-   ev.value = value;
+    ev.type = type;
+    ev.code = code;
+    ev.value = value;
 
-   write(fd, &ev, sizeof(ev));
+    write(fd, &ev, sizeof(ev));
 }
 
-int open_devpath(char *path)
-{
+int open_devpath(char *path) {
     int fd;
     fd = open(path, O_RDWR | O_NONBLOCK);
 
@@ -56,7 +55,7 @@ int open_devpath(char *path)
 int get_abs_mt_tracking_id() {
     abs_mt_tracking_id = abs_mt_tracking_id + 1;
 
-    if(abs_mt_tracking_id > MAX_ABS_MT_TRACKING_ID) {
+    if (abs_mt_tracking_id > MAX_ABS_MT_TRACKING_ID) {
         abs_mt_tracking_id = 0;
     }
 
@@ -111,85 +110,89 @@ void reset_mouse(int fd) {
     touch_up(fd, MOUSE_MOVE_SLOT);
     last_abs_mt_position_x = MOUSE_MOVE_POSITION_X;
     last_abs_mt_position_y = MOUSE_MOVE_POSITION_Y;
-    touch_down(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x , last_abs_mt_position_y);
+    touch_down(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x,
+               last_abs_mt_position_y);
 }
 
-void convert_keyboard_event(int fd, struct input_event *ev) {
-}
+void convert_keyboard_event(int fd, struct input_event *ev) {}
 
 void convert_mouse_event(int fd, struct input_event *ev) {
-    switch(ev->type) {
-        case EV_KEY:
-            switch(ev->code) {
-                case BTN_LEFT:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, MOUSE_LEFT_SLOT, MOUSE_LEFT_POSITION_X, MOUSE_LEFT_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, MOUSE_LEFT_SLOT);
-                            break;
-                    }
-                    break;
-                case BTN_RIGHT:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, MOUSE_RIGHT_SLOT, MOUSE_RIGHT_POSITION_X, MOUSE_RIGHT_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, MOUSE_RIGHT_SLOT);
-                            break;
-                    }
-                    break;
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case BTN_LEFT:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, MOUSE_LEFT_SLOT, MOUSE_LEFT_POSITION_X,
+                           MOUSE_LEFT_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, MOUSE_LEFT_SLOT);
+                break;
             }
             break;
-        case EV_REL:
-            switch(ev->code) {
-                case REL_X:
-                    last_abs_mt_position_y = last_abs_mt_position_y - ev->value;
-                    if(last_abs_mt_position_y > MAX_ABS_MT_POSITION_Y || last_abs_mt_position_y < 0) {
-                        reset_mouse(fd);
-                    } else {
-                        touch_move_y(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_y);
-                    }
-                    break;
-                case REL_Y:
-                    last_abs_mt_position_x = last_abs_mt_position_x + ev->value;
-                    if(last_abs_mt_position_x > MAX_ABS_MT_POSITION_X || last_abs_mt_position_x < 0) {
-                        reset_mouse(fd);
-                    } else {
-                        touch_move_x(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x);
-                    }
-                    break;
+        case BTN_RIGHT:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, MOUSE_RIGHT_SLOT, MOUSE_RIGHT_POSITION_X,
+                           MOUSE_RIGHT_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, MOUSE_RIGHT_SLOT);
+                break;
             }
             break;
-        case EV_SYN:
-            switch(ev->code) {
-                case SYN_REPORT:
-                    write_event(fd, EV_SYN, SYN_REPORT, 0);
-                    break;
+        }
+        break;
+    case EV_REL:
+        switch (ev->code) {
+        case REL_X:
+            last_abs_mt_position_y = last_abs_mt_position_y - ev->value;
+            if (last_abs_mt_position_y > MAX_ABS_MT_POSITION_Y ||
+                last_abs_mt_position_y < 0) {
+                reset_mouse(fd);
+            } else {
+                touch_move_y(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_y);
             }
+            break;
+        case REL_Y:
+            last_abs_mt_position_x = last_abs_mt_position_x + ev->value;
+            if (last_abs_mt_position_x > MAX_ABS_MT_POSITION_X ||
+                last_abs_mt_position_x < 0) {
+                reset_mouse(fd);
+            } else {
+                touch_move_x(fd, MOUSE_MOVE_SLOT, last_abs_mt_position_x);
+            }
+            break;
+        }
+        break;
+    case EV_SYN:
+        switch (ev->code) {
+        case SYN_REPORT:
+            write_event(fd, EV_SYN, SYN_REPORT, 0);
+            break;
+        }
     }
 }
 
-int main(int argc, char* argv[]) {
-   struct input_event ev;
+int main(int argc, char *argv[]) {
+    struct input_event ev;
 
-   if(argc == 1 || argc == 2 || argc == 3) {
-       printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n", argv[0]);
-       exit(EXIT_FAILURE);
-   } else {
-       touch_fd = open_devpath(argv[1]);
-       mouse_fd = open_devpath(argv[2]);
-       /* keyboard_fd = open_devpath(argv[3]); */
+    if (argc == 1 || argc == 2 || argc == 3) {
+        printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n",
+               argv[0]);
+        exit(EXIT_FAILURE);
+    } else {
+        touch_fd = open_devpath(argv[1]);
+        mouse_fd = open_devpath(argv[2]);
+        /* keyboard_fd = open_devpath(argv[3]); */
 
-       start_mouse(touch_fd);
+        start_mouse(touch_fd);
 
-       while(1) {
-            if(read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
+        while (1) {
+            if (read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
                 convert_mouse_event(touch_fd, &ev);
             }
-       }
-   }
-
+        }
+    }
 }

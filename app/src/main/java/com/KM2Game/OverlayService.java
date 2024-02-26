@@ -1,21 +1,21 @@
 package com.KM2Game;
 
-import android.app.Service;
-import android.os.IBinder;
-import android.content.Intent;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
-import androidx.core.app.NotificationCompat;
-import android.os.Build;
-import android.view.WindowManager;
-import android.util.Log;
-import android.widget.Button;
+import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.Button;
+import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
 
@@ -31,17 +31,18 @@ public class OverlayService extends Service {
         if (Build.VERSION.SDK_INT >= 26) {
             createNotificationChannel();
 
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("KM2Game")
-                .setContentText("Start Overlay")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build();
+            Notification notification =
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle("KM2Game")
+                    .setContentText("Start Overlay")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build();
 
             startForeground(NOTIFICATION_ID, notification);
         }
 
-        wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
         btnOverlay = new Button(this);
         btnOverlay.setText("Overlay");
@@ -56,8 +57,7 @@ public class OverlayService extends Service {
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            type,
+            WindowManager.LayoutParams.WRAP_CONTENT, type,
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
             PixelFormat.TRANSLUCENT);
 
@@ -81,14 +81,14 @@ public class OverlayService extends Service {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_description);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel channel =
+                new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this.
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            // Register the channel with the system; you can't change the
+            // importance or other notification behaviors after this.
+            NotificationManager notificationManager =
+                getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
-
 }
-
