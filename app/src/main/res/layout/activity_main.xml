@@ -7,9 +7,9 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btnStartService"
+        android:id="@+id/btnStartOverlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Service" />
+        android:text="Start Overlay" />
 
 </LinearLayout>

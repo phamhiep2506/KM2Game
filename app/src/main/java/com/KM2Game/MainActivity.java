@@ -17,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnStartService = (Button) findViewById(R.id.btnStartService);
-        btnStartService.setOnClickListener(new OnClickListener() {
+        Button btnStartOverlay = (Button) findViewById(R.id.btnStartOverlay);
+        btnStartOverlay.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 startService(intent);
             }
