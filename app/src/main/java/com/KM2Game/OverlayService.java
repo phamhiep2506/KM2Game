@@ -7,18 +7,27 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.os.Build;
+import android.view.WindowManager;
 import android.util.Log;
+import android.widget.Button;
+import android.graphics.PixelFormat;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 public class OverlayService extends Service {
 
     private String CHANNEL_ID = "KM2Game";
     private int NOTIFICATION_ID = 1;
+    private WindowManager wm;
+    private Button btnOverlay;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("com.KM2Game", "onStartCommand service");
+
         if (Build.VERSION.SDK_INT >= 26) {
             createNotificationChannel();
 
@@ -31,6 +40,31 @@ public class OverlayService extends Service {
 
             startForeground(NOTIFICATION_ID, notification);
         }
+
+        wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+        btnOverlay = new Button(this);
+        btnOverlay.setText("Overlay");
+        btnOverlay.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.requestPointerCapture();
+            }
+        });
+
+        int type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            type,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            PixelFormat.TRANSLUCENT);
+
+        params.gravity = Gravity.TOP;
+        params.x = 0;
+        params.y = 0;
+        wm.addView(btnOverlay, params);
 
         return START_NOT_STICKY;
     }
@@ -57,3 +91,4 @@ public class OverlayService extends Service {
     }
 
 }
+
