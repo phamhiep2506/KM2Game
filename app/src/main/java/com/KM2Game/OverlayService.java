@@ -6,41 +6,43 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
-import android.graphics.Color;
 
 public class OverlayService extends Service {
 
-    private String CHANNEL_ID = "KM2Game";
-    private int NOTIFICATION_ID = 1;
     private WindowManager wm;
     private TextView t;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onCreate();
 
-        createNotificationChannel();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-        Notification notification =
-            new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("KM2Game")
-                .setContentText("Start Overlay")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build();
+            String CHANNEL_ID = "KM2Game";
+            NotificationChannel channel =
+                new NotificationChannel(CHANNEL_ID, "KM2Game Overlay",
+                                        NotificationManager.IMPORTANCE_DEFAULT);
 
-        startForeground(NOTIFICATION_ID, notification);
+            ((NotificationManager)getSystemService(
+                 Context.NOTIFICATION_SERVICE))
+                .createNotificationChannel(channel);
+
+            Notification notification =
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("KM2Game")
+                    .setContentText("Start Overlay")
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .build();
+
+            startForeground(1, notification);
+        }
 
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
@@ -67,32 +69,5 @@ public class OverlayService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (t != null) {
-            wm.removeView(t);
-            t = null;
-        }
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not in the Support Library.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel =
-                new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the
-            // importance or other notification behaviors after this.
-            NotificationManager notificationManager =
-                getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 }
