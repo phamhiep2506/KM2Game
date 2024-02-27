@@ -2,11 +2,11 @@
 #include <fcntl.h>
 #include <linux/input-event-codes.h>
 #include <linux/input.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdbool.h>
 
 #define MAX_ABS_MT_SLOT 9
 #define MAX_ABS_MT_POSITION_X 1079
@@ -163,177 +163,191 @@ void reset_mouse(int fd) {
 }
 
 void convert_joystick_event(int fd, struct input_event *ev) {
-    switch(ev->type) {
+    switch (ev->type) {
     case EV_KEY:
-        switch(ev->code) {
+        switch (ev->code) {
         case KEY_W:
-            switch(ev->value) {
-                case 1:
-                    key_w = true;
-                    break;
-                case 0:
-                    key_w = false;
-                    break;
+            switch (ev->value) {
+            case 1:
+                key_w = true;
+                break;
+            case 0:
+                key_w = false;
+                break;
             }
             break;
         case KEY_S:
-            switch(ev->value) {
-                case 1:
-                    key_s = true;
-                    break;
-                case 0:
-                    key_s = false;
-                    break;
+            switch (ev->value) {
+            case 1:
+                key_s = true;
+                break;
+            case 0:
+                key_s = false;
+                break;
             }
             break;
         case KEY_A:
-            switch(ev->value) {
-                case 1:
-                    key_a = true;
-                    break;
-                case 0:
-                    key_a = false;
-                    break;
+            switch (ev->value) {
+            case 1:
+                key_a = true;
+                break;
+            case 0:
+                key_a = false;
+                break;
             }
             break;
         case KEY_D:
-            switch(ev->value) {
-                case 1:
-                    key_d = true;
-                    break;
-                case 0:
-                    key_d = false;
-                    break;
+            switch (ev->value) {
+            case 1:
+                key_d = true;
+                break;
+            case 0:
+                key_d = false;
+                break;
             }
             break;
         }
         break;
     }
 
-    if(key_w && key_a) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
+    if (key_w && key_a) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS,
+                       JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_w && key_d) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
+    } else if (key_w && key_d) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS,
+                       JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_s && key_a) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
+    } else if (key_s && key_a) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS,
+                       JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_s && key_d) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
+    } else if (key_s && key_d) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS,
+                       JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_w) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-        touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS - 100);
+    } else if (key_w) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
+        touch_move_x(fd, JOYSTICK_SLOT,
+                     JOYSTICK_POSITION_X - JOYSTICK_RADIUS - 100);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_s) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+    } else if (key_s) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
         touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_a) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+    } else if (key_a) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
         touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
-    } else if(key_d) {
-        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+    } else if (key_d) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
+                   JOYSTICK_POSITION_Y);
         touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
         write_event(fd, EV_SYN, SYN_REPORT, 0);
     } else {
         touch_up(fd, JOYSTICK_SLOT);
     }
-
 }
 
 void convert_keyboard_event(int fd, struct input_event *ev) {
-    switch(ev->type) {
-        case EV_KEY:
-            switch(ev->code) {
-                case KEY_SPACE:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, JUMP_SLOT, JUMP_POSITION_X, JUMP_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, JUMP_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_C:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, SIT_SLOT, SIT_POSITION_X, SIT_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, SIT_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_Z:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, LIE_SLOT, LIE_POSITION_X, LIE_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, LIE_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_R:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, LOAD_SLOT, LOAD_POSITION_X, LOAD_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, LOAD_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_Q:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, TILT_LEFT_SLOT, TILT_LEFT_POSITION_X, TILT_LEFT_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, TILT_LEFT_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_E:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, TILT_RIGHT_SLOT, TILT_RIGHT_POSITION_X, TILT_RIGHT_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, TILT_RIGHT_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_1:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, GUN_1_SLOT, GUN_1_POSITION_X, GUN_1_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, GUN_1_SLOT);
-                            break;
-                    }
-                    break;
-                case KEY_2:
-                    switch(ev->value) {
-                        case 1:
-                            touch_down(fd, GUN_2_SLOT, GUN_2_POSITION_X, GUN_2_POSITION_Y);
-                            break;
-                        case 0:
-                            touch_up(fd, GUN_2_SLOT);
-                            break;
-                    }
-                    break;
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_SPACE:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, JUMP_SLOT, JUMP_POSITION_X, JUMP_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, JUMP_SLOT);
+                break;
             }
             break;
+        case KEY_C:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, SIT_SLOT, SIT_POSITION_X, SIT_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, SIT_SLOT);
+                break;
+            }
+            break;
+        case KEY_Z:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, LIE_SLOT, LIE_POSITION_X, LIE_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, LIE_SLOT);
+                break;
+            }
+            break;
+        case KEY_R:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, LOAD_SLOT, LOAD_POSITION_X, LOAD_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, LOAD_SLOT);
+                break;
+            }
+            break;
+        case KEY_Q:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, TILT_LEFT_SLOT, TILT_LEFT_POSITION_X,
+                           TILT_LEFT_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, TILT_LEFT_SLOT);
+                break;
+            }
+            break;
+        case KEY_E:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, TILT_RIGHT_SLOT, TILT_RIGHT_POSITION_X,
+                           TILT_RIGHT_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, TILT_RIGHT_SLOT);
+                break;
+            }
+            break;
+        case KEY_1:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, GUN_1_SLOT, GUN_1_POSITION_X, GUN_1_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, GUN_1_SLOT);
+                break;
+            }
+            break;
+        case KEY_2:
+            switch (ev->value) {
+            case 1:
+                touch_down(fd, GUN_2_SLOT, GUN_2_POSITION_X, GUN_2_POSITION_Y);
+                break;
+            case 0:
+                touch_up(fd, GUN_2_SLOT);
+                break;
+            }
+            break;
+        }
+        break;
     }
 }
 
@@ -415,7 +429,7 @@ int main(int argc, char *argv[]) {
                 convert_mouse_event(touch_fd, &ev);
             }
 
-            if(read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {
+            if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {
                 convert_joystick_event(touch_fd, &ev);
                 convert_keyboard_event(touch_fd, &ev);
             }
