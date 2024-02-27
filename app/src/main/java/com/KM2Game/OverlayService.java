@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
@@ -22,49 +23,41 @@ public class OverlayService extends Service {
     private String CHANNEL_ID = "KM2Game";
     private int NOTIFICATION_ID = 1;
     private WindowManager wm;
-    private Button btnOverlay;
+    private TextView t;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("com.KM2Game", "onStartCommand service");
+        super.onCreate();
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            createNotificationChannel();
+        createNotificationChannel();
 
-            Notification notification =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentTitle("KM2Game")
-                    .setContentText("Start Overlay")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .build();
+        Notification notification =
+            new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("KM2Game")
+                .setContentText("Start Overlay")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
 
-            startForeground(NOTIFICATION_ID, notification);
-        }
+        startForeground(NOTIFICATION_ID, notification);
 
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
-        btnOverlay = new Button(this);
-        btnOverlay.setText("Overlay");
-        btnOverlay.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.requestPointerCapture();
-            }
-        });
-
-        int type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        t = new TextView(this);
+        t.setText("KM2Game: Off");
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT, type,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
             PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.TOP;
+        params.gravity = Gravity.START | Gravity.TOP;
         params.x = 0;
         params.y = 0;
-        wm.addView(btnOverlay, params);
+        wm.addView(t, params);
 
         return START_NOT_STICKY;
     }
@@ -72,6 +65,15 @@ public class OverlayService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (t != null) {
+            wm.removeView(t);
+            t = null;
+        }
     }
 
     private void createNotificationChannel() {
