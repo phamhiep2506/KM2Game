@@ -24,10 +24,42 @@
 #define JOYSTICK_POSITION_Y 1877
 #define JOYSTICK_RADIUS 250
 
+#define JUMP_POSITION_X 732
+#define JUMP_POSITION_Y 160
+
+#define SIT_POSITION_X 1013
+#define SIT_POSITION_Y 372
+
+#define LIE_POSITION_X 1000
+#define LIE_POSITION_Y 206
+
+#define LOAD_POSITION_X 1012
+#define LOAD_POSITION_Y 542
+
+#define TILT_LEFT_POSITION_X 397
+#define TILT_LEFT_POSITION_Y 1984
+
+#define TILT_RIGHT_POSITION_X 400
+#define TILT_RIGHT_POSITION_Y 1835
+
+#define GUN_1_POSITION_X 980
+#define GUN_1_POSITION_Y 1301
+
+#define GUN_2_POSITION_X 980
+#define GUN_2_POSITION_Y 1056
+
 #define MOUSE_MOVE_SLOT 0
 #define MOUSE_LEFT_SLOT 1
 #define MOUSE_RIGHT_SLOT 2
 #define JOYSTICK_SLOT 3
+#define JUMP_SLOT 4
+#define SIT_SLOT 5
+#define LIE_SLOT 6
+#define LOAD_SLOT 7
+#define TILT_LEFT_SLOT 8
+#define TILT_RIGHT_SLOT 9
+#define GUN_1_SLOT 10
+#define GUN_2_SLOT 11
 
 int touch_fd, mouse_fd, keyboard_fd;
 int last_abs_mt_position_x = MOUSE_MOVE_POSITION_X;
@@ -216,6 +248,95 @@ void convert_joystick_event(int fd, struct input_event *ev) {
 
 }
 
+void convert_keyboard_event(int fd, struct input_event *ev) {
+    switch(ev->type) {
+        case EV_KEY:
+            switch(ev->code) {
+                case KEY_SPACE:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, JUMP_SLOT, JUMP_POSITION_X, JUMP_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, JUMP_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_C:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, SIT_SLOT, SIT_POSITION_X, SIT_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, SIT_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_Z:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, LIE_SLOT, LIE_POSITION_X, LIE_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, LIE_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_R:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, LOAD_SLOT, LOAD_POSITION_X, LOAD_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, LOAD_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_Q:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, TILT_LEFT_SLOT, TILT_LEFT_POSITION_X, TILT_LEFT_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, TILT_LEFT_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_E:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, TILT_RIGHT_SLOT, TILT_RIGHT_POSITION_X, TILT_RIGHT_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, TILT_RIGHT_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_1:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, GUN_1_SLOT, GUN_1_POSITION_X, GUN_1_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, GUN_1_SLOT);
+                            break;
+                    }
+                    break;
+                case KEY_2:
+                    switch(ev->value) {
+                        case 1:
+                            touch_down(fd, GUN_2_SLOT, GUN_2_POSITION_X, GUN_2_POSITION_Y);
+                            break;
+                        case 0:
+                            touch_up(fd, GUN_2_SLOT);
+                            break;
+                    }
+                    break;
+            }
+            break;
+    }
+}
+
 void convert_mouse_event(int fd, struct input_event *ev) {
     switch (ev->type) {
     case EV_KEY:
@@ -296,6 +417,7 @@ int main(int argc, char *argv[]) {
 
             if(read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {
                 convert_joystick_event(touch_fd, &ev);
+                convert_keyboard_event(touch_fd, &ev);
             }
         }
     }
