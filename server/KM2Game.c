@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #define MAX_ABS_MT_SLOT 9
 #define MAX_ABS_MT_POSITION_X 1079
@@ -19,8 +20,8 @@
 #define MOUSE_RIGHT_POSITION_X 550
 #define MOUSE_RIGHT_POSITION_Y 150
 
-#define JOYSTICK_POSITION_X 800
-#define JOYSTICK_POSITION_Y 1875
+#define JOYSTICK_POSITION_X 813
+#define JOYSTICK_POSITION_Y 1877
 #define JOYSTICK_RADIUS 250
 
 #define MOUSE_MOVE_SLOT 0
@@ -32,6 +33,10 @@ int touch_fd, mouse_fd, keyboard_fd;
 int last_abs_mt_position_x = MOUSE_MOVE_POSITION_X;
 int last_abs_mt_position_y = MOUSE_MOVE_POSITION_Y;
 int abs_mt_tracking_id = 0;
+bool key_w = false;
+bool key_s = false;
+bool key_a = false;
+bool key_d = false;
 
 void write_event(int fd, int type, int code, int value) {
     struct input_event ev;
@@ -93,6 +98,12 @@ void touch_move_y(int fd, int abs_slot, int abs_y) {
     write_event(fd, EV_ABS, ABS_MT_POSITION_Y, abs_y);
 }
 
+void touch_move_x_y(int fd, int abs_slot, int abs_x, int abs_y) {
+    write_event(fd, EV_ABS, ABS_MT_SLOT, abs_slot);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_X, abs_x);
+    write_event(fd, EV_ABS, ABS_MT_POSITION_Y, abs_y);
+}
+
 void start_mouse(int fd) {
     write_event(touch_fd, EV_ABS, ABS_MT_SLOT, MOUSE_MOVE_SLOT);
     write_event(touch_fd, EV_ABS, ABS_MT_TRACKING_ID, get_abs_mt_tracking_id());
@@ -126,54 +137,83 @@ void convert_joystick_event(int fd, struct input_event *ev) {
         case KEY_W:
             switch(ev->value) {
                 case 1:
-                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-                    touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS);
-                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    key_w = true;
                     break;
                 case 0:
-                    touch_up(fd, JOYSTICK_SLOT);
+                    key_w = false;
                     break;
             }
             break;
         case KEY_S:
             switch(ev->value) {
                 case 1:
-                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-                    touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS);
-                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    key_s = true;
                     break;
                 case 0:
-                    touch_up(fd, JOYSTICK_SLOT);
+                    key_s = false;
                     break;
             }
             break;
         case KEY_A:
             switch(ev->value) {
                 case 1:
-                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-                    touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
-                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    key_a = true;
                     break;
                 case 0:
-                    touch_up(fd, JOYSTICK_SLOT);
+                    key_a = false;
                     break;
             }
             break;
         case KEY_D:
             switch(ev->value) {
                 case 1:
-                    touch_down(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
-                    touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
-                    write_event(fd, EV_SYN, SYN_REPORT, 0);
+                    key_d = true;
                     break;
                 case 0:
-                    touch_up(fd, JOYSTICK_SLOT);
+                    key_d = false;
                     break;
             }
             break;
         }
         break;
     }
+
+    if(key_w && key_a) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_w && key_d) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_s && key_a) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_s && key_d) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_x_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_w) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS - 100);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_s) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_x(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_a) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else if(key_d) {
+        touch_down(touch_fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X, JOYSTICK_POSITION_Y);
+        touch_move_y(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
+        write_event(fd, EV_SYN, SYN_REPORT, 0);
+    } else {
+        touch_up(fd, JOYSTICK_SLOT);
+    }
+
 }
 
 void convert_mouse_event(int fd, struct input_event *ev) {
