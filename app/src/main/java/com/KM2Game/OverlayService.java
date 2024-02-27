@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
+import android.graphics.Color;
 
 public class OverlayService extends Service {
 
@@ -45,6 +46,7 @@ public class OverlayService extends Service {
 
         t = new TextView(this);
         t.setText("KM2Game: Off");
+        t.setTextColor(Color.RED);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,

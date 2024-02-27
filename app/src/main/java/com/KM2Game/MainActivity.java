@@ -6,8 +6,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
+
+    static{
+        System.loadLibrary("socket");
+    }
+
+    public native String helloJni();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startService(intent);
+                Log.i("KM2Game", helloJni());
             }
         });
 
