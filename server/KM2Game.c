@@ -174,6 +174,7 @@ void convert_joystick_event(int fd, struct input_event *ev) {
         }
         break;
     }
+
     switch (ev->type) {
     case EV_KEY:
         switch (ev->code) {
@@ -222,28 +223,36 @@ void convert_joystick_event(int fd, struct input_event *ev) {
     }
 
     if (key_w && key_a) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS,
                    JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
     } else if (key_w && key_d) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X - JOYSTICK_RADIUS,
                    JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
     } else if (key_s && key_a) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS,
                    JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
     } else if (key_s && key_d) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS,
                    JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
     } else if (key_w) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT,
                    JOYSTICK_POSITION_X - JOYSTICK_RADIUS - 100,
                    JOYSTICK_POSITION_Y);
     } else if (key_s) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X + JOYSTICK_RADIUS,
                    JOYSTICK_POSITION_Y);
     } else if (key_a) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
                    JOYSTICK_POSITION_Y + JOYSTICK_RADIUS);
     } else if (key_d) {
+        usleep(10000);
         touch_move(fd, JOYSTICK_SLOT, JOYSTICK_POSITION_X,
                    JOYSTICK_POSITION_Y - JOYSTICK_RADIUS);
     } else {
