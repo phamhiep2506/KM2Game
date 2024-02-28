@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#define PORT 5555
 
 #define MAX_ABS_MT_SLOT 9
 #define MAX_ABS_MT_POSITION_X 1079
@@ -416,6 +420,8 @@ void convert_mouse_event(int fd, struct input_event *ev) {
 
 int main(int argc, char *argv[]) {
     struct input_event ev;
+    int socket_fd, new_socket;
+    struct sockaddr_in address;
 
     if (argc == 1 || argc == 2 || argc == 3) {
         printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n",
@@ -425,6 +431,25 @@ int main(int argc, char *argv[]) {
         touch_fd = open_devpath(argv[1]);
         mouse_fd = open_devpath(argv[2]);
         keyboard_fd = open_devpath(argv[3]);
+
+        // create socket
+        if((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+            perror("create socket failed");
+            exit(EXIT_FAILURE);
+        }
+        address.sin_family = AF_INET;
+        address.sin_addr.s_addr = INADDR_ANY;
+        address.sin_port = htons(PORT);
+        // bind socket
+        if(bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+            perror("bind socket failed");
+            exit(EXIT_FAILURE);
+        }
+        // listen socket
+        if(listen(socket_fd, 1) < 0) {
+            perror("listen socket failed");
+            exit(EXIT_FAILURE);
+        }
 
         start_mouse(touch_fd);
 
