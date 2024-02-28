@@ -14,14 +14,19 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
+import android.util.Log;
 
 public class OverlayService extends Service {
 
     private WindowManager wm;
     private TextView t;
+    private int EXIT_FAILURE = 1;
+    private int EXIT_SUCCESS = 0;
+
+    private native int connectSocket();
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -47,8 +52,8 @@ public class OverlayService extends Service {
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
         t = new TextView(this);
-        t.setText("KM2Game: Off");
-        t.setTextColor(Color.RED);
+        // t.setText("KM2Game: Off");
+        // t.setTextColor(Color.RED);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -61,8 +66,17 @@ public class OverlayService extends Service {
         params.gravity = Gravity.START | Gravity.TOP;
         params.x = 0;
         params.y = 0;
+
         wm.addView(t, params);
 
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if(connectSocket() == EXIT_FAILURE) {
+            t.setText("Disconnect Socket");
+            t.setTextColor(Color.RED);
+        }
         return START_NOT_STICKY;
     }
 
@@ -70,4 +84,13 @@ public class OverlayService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    @Override
+    public void onDestroy() {
+        if (t != null) {
+            wm.removeView(t);
+            t = null;
+        }
+    }
+
 }

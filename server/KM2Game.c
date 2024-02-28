@@ -422,9 +422,9 @@ int main(int argc, char *argv[]) {
     struct input_event ev;
     int socket_fd, new_socket;
     struct sockaddr_in address;
+    int option = 1;
     socklen_t addrlen = sizeof(address);
     char buffer[1024] = {0};
-    char* hello = "server to jni";
 
     if (argc == 1 || argc == 2 || argc == 3) {
         printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n",
@@ -441,6 +441,10 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
         // bind socket
+        if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option))) {
+            perror("Set socket option failed");
+            exit(EXIT_FAILURE);
+        }
         address.sin_family = AF_INET;
         address.sin_addr.s_addr = INADDR_ANY;
         address.sin_port = htons(PORT);
@@ -461,7 +465,6 @@ int main(int argc, char *argv[]) {
 
         read(new_socket, buffer, sizeof(buffer));
         printf("%s\n", buffer);
-        send(new_socket, hello, strlen(hello), 0);
 
         close(socket_fd);
 

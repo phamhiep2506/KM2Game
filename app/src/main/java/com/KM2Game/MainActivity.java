@@ -11,22 +11,28 @@ public class MainActivity extends AppCompatActivity {
 
     static { System.loadLibrary("socket"); }
 
-    private native void socket();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        Intent intent = new Intent(this, OverlayService.class);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnStartOverlay = findViewById(R.id.btnStartOverlay);
-        btnStartOverlay.setOnClickListener(new View.OnClickListener() {
+        Intent intent = new Intent(this, OverlayService.class);
+
+        Button btnStart = findViewById(R.id.btnStart);
+        Button btnStop = findViewById(R.id.btnStop);
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                socket();
                 startService(intent);
             }
         });
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                stopService(intent);
+            }
+        });
+
     }
 }
