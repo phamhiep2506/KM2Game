@@ -14,16 +14,15 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
-import android.util.Log;
 
 public class OverlayService extends Service {
 
     private WindowManager wm;
     private TextView t;
-    private int EXIT_FAILURE = 1;
-    private int EXIT_SUCCESS = 0;
 
     private native int connectSocket();
+    private native String receiveMsgSocket();
+    private native void sendMsgSocket(String string);
 
     @Override
     public void onCreate() {
@@ -52,8 +51,6 @@ public class OverlayService extends Service {
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
         t = new TextView(this);
-        // t.setText("KM2Game: Off");
-        // t.setTextColor(Color.RED);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -73,9 +70,11 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(connectSocket() == EXIT_FAILURE) {
+        if(connectSocket() < 0) {
             t.setText("Disconnect Socket");
             t.setTextColor(Color.RED);
+        } else {
+            sendMsgSocket("Hello Server");
         }
         return START_NOT_STICKY;
     }

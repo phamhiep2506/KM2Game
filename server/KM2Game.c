@@ -424,7 +424,6 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in address;
     int option = 1;
     socklen_t addrlen = sizeof(address);
-    char buffer[1024] = {0};
 
     if (argc == 1 || argc == 2 || argc == 3) {
         printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n",
@@ -463,8 +462,10 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
+        char buffer[1024];
         read(new_socket, buffer, sizeof(buffer));
         printf("%s\n", buffer);
+        write(new_socket, "Hello Client", sizeof("Hello Client"));
 
         close(socket_fd);
 
