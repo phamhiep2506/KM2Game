@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
 
     static { System.loadLibrary("socket"); }
 
-    public native String helloJni();
+    private native void socket();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnStartOverlay = findViewById(R.id.btnStartOverlay);
         btnStartOverlay.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { startService(intent); }
+            public void onClick(View v) {
+                socket();
+                startService(intent);
+            }
         });
     }
 }

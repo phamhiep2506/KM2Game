@@ -4,5 +4,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := socket
 LOCAL_SRC_FILES := socket.c
+LOCAL_LDLIBS := -llog
 
 include $(BUILD_SHARED_LIBRARY)

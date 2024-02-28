@@ -422,26 +422,29 @@ int main(int argc, char *argv[]) {
     struct input_event ev;
     int socket_fd, new_socket;
     struct sockaddr_in address;
+    socklen_t addrlen = sizeof(address);
+    char buffer[1024] = {0};
+    char* hello = "server to jni";
 
     if (argc == 1 || argc == 2 || argc == 3) {
         printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n",
                argv[0]);
         exit(EXIT_FAILURE);
     } else {
-        touch_fd = open_devpath(argv[1]);
-        mouse_fd = open_devpath(argv[2]);
-        keyboard_fd = open_devpath(argv[3]);
+        /* touch_fd = open_devpath(argv[1]); */
+        /* mouse_fd = open_devpath(argv[2]); */
+        /* keyboard_fd = open_devpath(argv[3]); */
 
         // create socket
         if((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             perror("create socket failed");
             exit(EXIT_FAILURE);
         }
+        // bind socket
         address.sin_family = AF_INET;
         address.sin_addr.s_addr = INADDR_ANY;
         address.sin_port = htons(PORT);
-        // bind socket
-        if(bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+        if(bind(socket_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
             perror("bind socket failed");
             exit(EXIT_FAILURE);
         }
@@ -450,18 +453,29 @@ int main(int argc, char *argv[]) {
             perror("listen socket failed");
             exit(EXIT_FAILURE);
         }
-
-        start_mouse(touch_fd);
-
-        while (1) {
-            if (read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
-                convert_mouse_event(touch_fd, &ev);
-            }
-
-            if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {
-                convert_joystick_event(touch_fd, &ev);
-                convert_keyboard_event(touch_fd, &ev);
-            }
+        // new socket
+        if((new_socket = accept(socket_fd, (struct sockaddr*)&address, &addrlen)) < 0) {
+            perror("accept socket failed");
+            exit(EXIT_FAILURE);
         }
+
+        read(new_socket, buffer, sizeof(buffer));
+        printf("%s\n", buffer);
+        send(new_socket, hello, strlen(hello), 0);
+
+        close(socket_fd);
+
+        /* start_mouse(touch_fd); */
+
+        /* while (1) { */
+        /*     if (read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) { */
+        /*         convert_mouse_event(touch_fd, &ev); */
+        /*     } */
+
+        /*     if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) { */
+        /*         convert_joystick_event(touch_fd, &ev); */
+        /*         convert_keyboard_event(touch_fd, &ev); */
+        /*     } */
+        /* } */
     }
 }
