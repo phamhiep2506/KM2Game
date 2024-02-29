@@ -464,10 +464,16 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        char buffer[1024];
-        read(new_socket, buffer, sizeof(buffer));
-        printf("%s\n", buffer);
-        write(new_socket, "Hello Client", sizeof("Hello Client"));
+        /* char buffer[1024]; */
+        /* read(new_socket, buffer, sizeof(buffer)); */
+        /* printf("%s\n", buffer); */
+        /* write(new_socket, "Hello Client", sizeof("Hello Client")); */
+        while(1) {
+            char str[1024];
+            printf("send: ");
+            scanf("%s", str);
+            write(new_socket, str, sizeof(str));
+        }
 
         close(socket_fd);
 

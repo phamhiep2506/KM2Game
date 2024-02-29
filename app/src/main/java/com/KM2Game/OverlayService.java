@@ -13,15 +13,17 @@ import android.os.IBinder;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.view.View;
 import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
 
     private WindowManager wm;
     private TextView t;
+    private View v;
 
-    private native int connectSocket();
-    private native String receiveMsgSocket();
+    private native boolean connectSocket();
+    private native void disconnectSocket();
     private native void sendMsgSocket(String string);
 
     @Override
@@ -69,11 +71,15 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (connectSocket() < 0) {
+        if (connectSocket() == false) {
             t.setText("Disconnect Socket");
             t.setTextColor(Color.RED);
         } else {
-            sendMsgSocket("Hello Server");
+            t.setText("KM: Off");
+            t.setTextColor(Color.RED);
+
+            AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
+            asyncReceiveMsgSocket.execute();
         }
         return START_NOT_STICKY;
     }
@@ -88,6 +94,15 @@ public class OverlayService extends Service {
         if (t != null) {
             wm.removeView(t);
             t = null;
+            disconnectSocket();
         }
+    }
+
+    public void hideMouse() {
+        v.requestPointerCapture();
+    }
+
+    public void showMouse() {
+        v.releasePointerCapture();
     }
 }
