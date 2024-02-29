@@ -65,12 +65,11 @@ public class OverlayService extends Service {
         params.y = 0;
 
         wm.addView(t, params);
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(connectSocket() < 0) {
+        if (connectSocket() < 0) {
             t.setText("Disconnect Socket");
             t.setTextColor(Color.RED);
         } else {
@@ -91,5 +90,4 @@ public class OverlayService extends Service {
             t = null;
         }
     }
-
 }

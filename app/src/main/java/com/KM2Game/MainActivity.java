@@ -23,16 +23,11 @@ public class MainActivity extends AppCompatActivity {
         Button btnStop = findViewById(R.id.btnStop);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startService(intent);
-            }
+            public void onClick(View v) { startService(intent); }
         });
 
         btnStop.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                stopService(intent);
-            }
+            public void onClick(View v) { stopService(intent); }
         });
-
     }
 }

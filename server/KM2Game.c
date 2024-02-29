@@ -2,13 +2,13 @@
 #include <fcntl.h>
 #include <linux/input-event-codes.h>
 #include <linux/input.h>
+#include <netinet/in.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <unistd.h>
 
 #define PORT 5555
 
@@ -435,29 +435,31 @@ int main(int argc, char *argv[]) {
         /* keyboard_fd = open_devpath(argv[3]); */
 
         // create socket
-        if((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             perror("create socket failed");
             exit(EXIT_FAILURE);
         }
         // bind socket
-        if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option))) {
+        if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+                       &option, sizeof(option))) {
             perror("Set socket option failed");
             exit(EXIT_FAILURE);
         }
         address.sin_family = AF_INET;
         address.sin_addr.s_addr = INADDR_ANY;
         address.sin_port = htons(PORT);
-        if(bind(socket_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        if (bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
             perror("bind socket failed");
             exit(EXIT_FAILURE);
         }
         // listen socket
-        if(listen(socket_fd, 1) < 0) {
+        if (listen(socket_fd, 1) < 0) {
             perror("listen socket failed");
             exit(EXIT_FAILURE);
         }
         // new socket
-        if((new_socket = accept(socket_fd, (struct sockaddr*)&address, &addrlen)) < 0) {
+        if ((new_socket = accept(socket_fd, (struct sockaddr *)&address,
+                                 &addrlen)) < 0) {
             perror("accept socket failed");
             exit(EXIT_FAILURE);
         }
