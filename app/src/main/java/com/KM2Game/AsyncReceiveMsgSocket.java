@@ -1,18 +1,22 @@
 package com.KM2Game;
 
 import android.os.AsyncTask;
-import android.view.View;
 import android.util.Log;
 
-public class AsyncReceiveMsgSocket extends AsyncTask<String, String, String> {
+public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
     private native String receiveMsgSocket();
-    private View v;
 
     @Override
-    protected String doInBackground(String... params) {
+    protected Void doInBackground(Void... params) {
         while(true) {
-            Log.i("com.KM2Game", receiveMsgSocket());
+            publishProgress(receiveMsgSocket());
         }
+    }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        String msg = values[0];
+        Log.i("com.KM2Game", msg);
     }
 }

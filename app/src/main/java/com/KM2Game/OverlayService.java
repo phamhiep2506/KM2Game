@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.view.View;
 import androidx.core.app.NotificationCompat;
+import android.util.Log;
 
 public class OverlayService extends Service {
 
@@ -98,11 +99,4 @@ public class OverlayService extends Service {
         }
     }
 
-    public void hideMouse() {
-        v.requestPointerCapture();
-    }
-
-    public void showMouse() {
-        v.releasePointerCapture();
-    }
 }

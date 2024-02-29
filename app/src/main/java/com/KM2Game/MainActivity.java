@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import android.view.PointerIcon;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +24,9 @@ public class MainActivity extends AppCompatActivity {
         Button btnStop = findViewById(R.id.btnStop);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { startService(intent); }
+            public void onClick(View v) {
+                startService(intent);
+            }
         });
 
         btnStop.setOnClickListener(new View.OnClickListener() {

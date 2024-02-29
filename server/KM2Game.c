@@ -464,30 +464,26 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        /* char buffer[1024]; */
-        /* read(new_socket, buffer, sizeof(buffer)); */
-        /* printf("%s\n", buffer); */
-        /* write(new_socket, "Hello Client", sizeof("Hello Client")); */
         while(1) {
             char str[1024];
-            printf("send: ");
             scanf("%s", str);
             write(new_socket, str, sizeof(str));
+
+            /* start_mouse(touch_fd); */
+
+            /* while (1) { */
+            /*     if (read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) { */
+            /*         convert_mouse_event(touch_fd, &ev); */
+            /*     } */
+
+            /*     if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) { */
+            /*         convert_joystick_event(touch_fd, &ev); */
+            /*         convert_keyboard_event(touch_fd, &ev); */
+            /*     } */
+            /* } */
         }
 
         close(socket_fd);
 
-        /* start_mouse(touch_fd); */
-
-        /* while (1) { */
-        /*     if (read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) { */
-        /*         convert_mouse_event(touch_fd, &ev); */
-        /*     } */
-
-        /*     if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) { */
-        /*         convert_joystick_event(touch_fd, &ev); */
-        /*         convert_keyboard_event(touch_fd, &ev); */
-        /*     } */
-        /* } */
     }
 }
