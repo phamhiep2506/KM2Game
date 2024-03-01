@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnRunGame.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                v.requestPointerCapture();
                 startService(intent);
             }
         });

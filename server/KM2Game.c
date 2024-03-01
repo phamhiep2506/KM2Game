@@ -424,6 +424,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in address;
     int option = 1;
     socklen_t addrlen = sizeof(address);
+    fd_set socket_fds;
 
     if (argc == 1 || argc == 2 || argc == 3) {
         printf("Usage: %s [TOUCH_DEVPATH] [MOUSE_DEVPATH] [KEYBOARD_DEVPATH]\n",
@@ -463,12 +464,13 @@ int main(int argc, char *argv[]) {
             perror("accept socket failed");
             exit(EXIT_FAILURE);
         }
-
-        while(new_socket > 0) {
-            char str[1024];
-            printf("send: ");
-            scanf("%s", str);
-            write(new_socket, str, sizeof(str));
+        while(1) {
+            if(new_socket > 0) {
+                char str[1024];
+                printf("send: ");
+                scanf("%s", str);
+                write(new_socket, str, sizeof(str));
+            }
 
 
             /* start_mouse(touch_fd); */
