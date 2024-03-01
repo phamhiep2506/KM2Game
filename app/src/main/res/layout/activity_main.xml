@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <EditText
+    android:id="@+id/nameGame"
+    android:layout_alignParentLeft="true"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:hint="Name game"
+    android:inputType="text" />
 
     <Button
-        android:id="@+id/btnStart"
+        android:id="@+id/btnRunGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start" />
+        android:layout_below="@id/nameGame"
+        android:text="Run Game" />
 
     <Button
-        android:id="@+id/btnStop"
+        android:id="@+id/btnConnectSocket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop" />
+        android:layout_below="@id/btnRunGame"
+        android:text="Connect Socket" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btnDisconnectSocket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnRunGame"
+        android:layout_toRightOf="@id/btnConnectSocket"
+        android:text="Disconnect Socket" />
+
+    <Button
+        android:id="@+id/btnStartOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnConnectSocket"
+        android:text="Start Overlay" />
+
+    <Button
+        android:id="@+id/btnStopOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnDisconnectSocket"
+        android:layout_toRightOf="@id/btnStartOverlay"
+        android:text="Stop Overlay" />
+
+</RelativeLayout>

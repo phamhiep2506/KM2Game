@@ -11,7 +11,10 @@ import android.view.PointerIcon;
 public class MainActivity extends AppCompatActivity {
 
     static { System.loadLibrary("socket"); }
-    View v;
+
+    private native void createSocket();
+    private native boolean connectSocket();
+    private native void disconnectSocket();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -19,20 +22,43 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // create socket
+        createSocket();
+
+        // service
         Intent intent = new Intent(this, OverlayService.class);
 
-        Button btnStart = findViewById(R.id.btnStart);
-        Button btnStop = findViewById(R.id.btnStop);
+        // button
+        Button btnRunGame = findViewById(R.id.btnRunGame);
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
+        Button btnConnectSocket = findViewById(R.id.btnConnectSocket);
+        Button btnDisconnectSocket = findViewById(R.id.btnDisconnectSocket);
+
+        Button btnStartOverlay = findViewById(R.id.btnStartOverlay);
+        Button btnStopOverlay = findViewById(R.id.btnStopOverlay);
+
+        btnConnectSocket.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startService(intent);
-                v.requestPointerCapture();
+                connectSocket();
             }
         });
 
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { stopService(intent); }
+        btnDisconnectSocket.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                disconnectSocket();
+            }
+        });
+
+        btnStartOverlay.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startService(intent);
+            }
+        });
+
+        btnStopOverlay.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                stopService(intent);
+            }
         });
     }
 }

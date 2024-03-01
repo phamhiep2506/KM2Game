@@ -16,19 +16,11 @@ import android.widget.TextView;
 import android.view.View;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
-import android.os.AsyncTask;
 
 public class OverlayService extends Service {
 
     private WindowManager wm;
     private TextView status;
-
-    private native void createSocket();
-    private native boolean connectSocket();
-    private native void disconnectSocket();
-    private native void sendMsgSocket(String string);
-
-    AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
 
     @Override
     public void onCreate() {
@@ -57,6 +49,8 @@ public class OverlayService extends Service {
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
         status = new TextView(this);
+        status.setText("Overlay");
+        status.setTextColor(Color.GREEN);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -72,16 +66,6 @@ public class OverlayService extends Service {
 
         wm.addView(status, params);
 
-        createSocket();
-        if(connectSocket() == false) {
-            status.setText("Disconnect socket");
-            status.setTextColor(Color.RED);
-        } else {
-            status.setText("Connect socket");
-            status.setTextColor(Color.GREEN);
-            asyncReceiveMsgSocket.execute();
-        }
-
     }
 
     @Override
@@ -94,8 +78,6 @@ public class OverlayService extends Service {
         if (status != null) {
             wm.removeView(status);
             status = null;
-            disconnectSocket();
-            asyncReceiveMsgSocket.cancel(true);
         }
     }
 
