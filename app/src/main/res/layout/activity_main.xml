@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
     <EditText
-    android:id="@+id/nameGame"
+    android:id="@+id/inputNameGame"
     android:layout_alignParentLeft="true"
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
@@ -16,37 +18,12 @@
         android:id="@+id/btnRunGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nameGame"
         android:text="Run Game" />
-
-    <Button
-        android:id="@+id/btnConnectSocket"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnRunGame"
-        android:text="Connect Socket" />
-
-    <Button
-        android:id="@+id/btnDisconnectSocket"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnRunGame"
-        android:layout_toRightOf="@id/btnConnectSocket"
-        android:text="Disconnect Socket" />
-
-    <Button
-        android:id="@+id/btnStartOverlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnConnectSocket"
-        android:text="Start Overlay" />
 
     <Button
         android:id="@+id/btnStopOverlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnDisconnectSocket"
-        android:layout_toRightOf="@id/btnStartOverlay"
         android:text="Stop Overlay" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -22,6 +22,12 @@ public class OverlayService extends Service {
     private WindowManager wm;
     private TextView status;
 
+    private native void createSocket();
+    private native boolean connectSocket();
+    private native void disconnectSocket();
+
+    AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
+
     @Override
     public void onCreate() {
 
@@ -48,10 +54,6 @@ public class OverlayService extends Service {
 
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
-        status = new TextView(this);
-        status.setText("Overlay");
-        status.setTextColor(Color.GREEN);
-
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -63,6 +65,20 @@ public class OverlayService extends Service {
         params.gravity = Gravity.START | Gravity.TOP;
         params.x = 0;
         params.y = 0;
+
+        status = new TextView(this);
+
+        createSocket();
+
+        if(connectSocket() == true) {
+            status.setText("Socket connected");
+            status.setTextColor(Color.GREEN);
+            Log.i("KM2Game", "asyncReceiveMsgSocket");
+            asyncReceiveMsgSocket.execute();
+        } else {
+            status.setText("Socket disconnected");
+            status.setTextColor(Color.RED);
+        }
 
         wm.addView(status, params);
 
@@ -78,6 +94,8 @@ public class OverlayService extends Service {
         if (status != null) {
             wm.removeView(status);
             status = null;
+            asyncReceiveMsgSocket.cancel(true);
+            disconnectSocket();
         }
     }
 
