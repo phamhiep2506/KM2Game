@@ -16,16 +16,19 @@ import android.widget.TextView;
 import android.view.View;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
+import android.os.AsyncTask;
 
 public class OverlayService extends Service {
 
     private WindowManager wm;
-    private TextView t;
-    private View v;
+    private TextView status;
 
+    private native void createSocket();
     private native boolean connectSocket();
     private native void disconnectSocket();
     private native void sendMsgSocket(String string);
+
+    AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
 
     @Override
     public void onCreate() {
@@ -53,7 +56,7 @@ public class OverlayService extends Service {
 
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 
-        t = new TextView(this);
+        status = new TextView(this);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -67,22 +70,18 @@ public class OverlayService extends Service {
         params.x = 0;
         params.y = 0;
 
-        wm.addView(t, params);
-    }
+        wm.addView(status, params);
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (connectSocket() == false) {
-            t.setText("Disconnect Socket");
-            t.setTextColor(Color.RED);
+        createSocket();
+        if(connectSocket() == false) {
+            status.setText("Disconnect socket");
+            status.setTextColor(Color.RED);
         } else {
-            t.setText("KM: Off");
-            t.setTextColor(Color.RED);
-
-            AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
+            status.setText("Connect socket");
+            status.setTextColor(Color.GREEN);
             asyncReceiveMsgSocket.execute();
         }
-        return START_NOT_STICKY;
+
     }
 
     @Override
@@ -92,10 +91,11 @@ public class OverlayService extends Service {
 
     @Override
     public void onDestroy() {
-        if (t != null) {
-            wm.removeView(t);
-            t = null;
+        if (status != null) {
+            wm.removeView(status);
+            status = null;
             disconnectSocket();
+            asyncReceiveMsgSocket.cancel(true);
         }
     }
 

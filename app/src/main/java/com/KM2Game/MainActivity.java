@@ -11,6 +11,7 @@ import android.view.PointerIcon;
 public class MainActivity extends AppCompatActivity {
 
     static { System.loadLibrary("socket"); }
+    View v;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startService(intent);
+                v.requestPointerCapture();
             }
         });
 

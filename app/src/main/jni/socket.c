@@ -9,35 +9,31 @@
 #define PORT 5555
 
 int socket_fd;
+struct sockaddr_in address;
 
-JNIEXPORT jboolean JNICALL
-Java_com_KM2Game_OverlayService_connectSocket(JNIEnv *env, jobject thiz) {
-    int connect_status;
-    struct sockaddr_in address;
-
+JNIEXPORT void JNICALL
+Java_com_KM2Game_OverlayService_createSocket(JNIEnv *env, jobject thiz) {
     // create socket
     if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         __android_log_write(ANDROID_LOG_ERROR, "com.KM2Game",
                             "Create socket failed");
-        return false;
     }
-
     // config socket
     address.sin_family = AF_INET;
     address.sin_port = htons(PORT);
     if (inet_pton(AF_INET, "127.0.0.1", &address.sin_addr) <= 0) {
         __android_log_write(ANDROID_LOG_ERROR, "com.KM2Game",
                             "Convert ip address failed");
-        return false;
     }
+}
 
-    // connect socket
+JNIEXPORT jboolean JNICALL
+Java_com_KM2Game_OverlayService_connectSocket(JNIEnv *env, jobject thiz) {
     if (connect(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
         __android_log_write(ANDROID_LOG_ERROR, "com.KM2Game",
                             "Connect socket failed");
         return false;
     }
-
     return true;
 }
 
@@ -45,6 +41,8 @@ JNIEXPORT void JNICALL
 Java_com_KM2Game_OverlayService_disconnectSocket(JNIEnv *env, jobject thiz) {
     if(socket_fd > 0) {
         close(socket_fd);
+        __android_log_write(ANDROID_LOG_INFO, "com.KM2Game",
+                            "Disconnect socket");
     }
 }
 

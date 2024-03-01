@@ -464,10 +464,12 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        while(1) {
+        while(new_socket > 0) {
             char str[1024];
+            printf("send: ");
             scanf("%s", str);
             write(new_socket, str, sizeof(str));
+
 
             /* start_mouse(touch_fd); */
 
@@ -483,6 +485,7 @@ int main(int argc, char *argv[]) {
             /* } */
         }
 
+        close(new_socket);
         close(socket_fd);
 
     }
