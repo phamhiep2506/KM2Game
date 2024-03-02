@@ -20,14 +20,14 @@ import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
 
-    private WindowManager wm;
-    public TextView status;
-    public ImageView pointer;
-
     private native void createSocket();
     private native boolean connectSocket();
 
-    AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
+    WindowManager wm;
+    TextView status;
+    ImageView pointer;
+    WindowManager.LayoutParams statusParams;
+    WindowManager.LayoutParams pointerParams;
 
     @Override
     public void onCreate() {
@@ -53,39 +53,37 @@ public class OverlayService extends Service {
             startForeground(1, notification);
         }
 
-        wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-
         // Status
         status = new TextView(this);
 
-        WindowManager.LayoutParams statusParams =
-            new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                PixelFormat.TRANSLUCENT);
+        statusParams = new WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            PixelFormat.TRANSLUCENT);
         statusParams.gravity = Gravity.START | Gravity.TOP;
 
         // Pointer
         pointer = new ImageView(this);
         pointer.setImageResource(R.drawable.ic_pointer);
+        pointer.setId(123);
 
-        WindowManager.LayoutParams pointerParams =
-            new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                PixelFormat.TRANSLUCENT);
+        pointerParams = new WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            PixelFormat.TRANSLUCENT);
         pointerParams.gravity = Gravity.START | Gravity.TOP;
 
         pointerParams.x = 540;
         pointerParams.y = 1170;
 
         // Add view
+        wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
         wm.addView(status, statusParams);
         wm.addView(pointer, pointerParams);
 
@@ -94,6 +92,8 @@ public class OverlayService extends Service {
         if (connectSocket() == true) {
             status.setText("Socket connected");
             status.setTextColor(Color.GREEN);
+
+            AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket(this);
             asyncReceiveMsgSocket.execute();
         } else {
             status.setText("Socket disconnected");
@@ -105,4 +105,11 @@ public class OverlayService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    public void updatePointer(int x, int y) {
+        pointerParams.x = x;
+        pointerParams.y = y;
+        wm.updateViewLayout(pointer, pointerParams);
+    }
+
 }
