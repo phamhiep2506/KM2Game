@@ -10,14 +10,13 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
-import android.view.Gravity;
-import android.view.WindowManager;
-import android.widget.TextView;
-import android.view.View;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
 
@@ -27,7 +26,6 @@ public class OverlayService extends Service {
 
     private native void createSocket();
     private native boolean connectSocket();
-    private native void disconnectSocket();
 
     AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket();
 
@@ -60,28 +58,30 @@ public class OverlayService extends Service {
         // Status
         status = new TextView(this);
 
-        WindowManager.LayoutParams statusParams = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT);
+        WindowManager.LayoutParams statusParams =
+            new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT);
         statusParams.gravity = Gravity.START | Gravity.TOP;
-        statusParams.x = 0;
-        statusParams.y = 0;
 
         // Pointer
         pointer = new ImageView(this);
         pointer.setImageResource(R.drawable.ic_pointer);
 
-        WindowManager.LayoutParams pointerParams = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            PixelFormat.TRANSLUCENT);
-
+        WindowManager.LayoutParams pointerParams =
+            new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT);
         pointerParams.gravity = Gravity.START | Gravity.TOP;
+
         pointerParams.x = 540;
         pointerParams.y = 1170;
 
@@ -89,39 +89,20 @@ public class OverlayService extends Service {
         wm.addView(status, statusParams);
         wm.addView(pointer, pointerParams);
 
-        // pointerParams.x = 800;
-        // pointerParams.y = 1170;
-        // wm.updateViewLayout(pointer, pointerParams);
-
         // Socket
         createSocket();
-        if(connectSocket() == true) {
+        if (connectSocket() == true) {
             status.setText("Socket connected");
             status.setTextColor(Color.GREEN);
-            Log.i("KM2Game", "asyncReceiveMsgSocket");
             asyncReceiveMsgSocket.execute();
         } else {
             status.setText("Socket disconnected");
             status.setTextColor(Color.RED);
         }
-
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-    @Override
-    public void onDestroy() {
-        if (status != null && pointer != null) {
-            wm.removeView(status);
-            wm.removeView(pointer);
-            status = null;
-            pointer = null;
-            asyncReceiveMsgSocket.cancel(true);
-            disconnectSocket();
-        }
-    }
-
 }

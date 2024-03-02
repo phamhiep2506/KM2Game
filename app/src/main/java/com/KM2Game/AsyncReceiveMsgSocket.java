@@ -9,7 +9,8 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        while(true) {
+        Log.i("com.KM2Game", "Start AsyncTask ReceiveMsgSocket");
+        while (true) {
             publishProgress(receiveMsgSocket());
         }
     }

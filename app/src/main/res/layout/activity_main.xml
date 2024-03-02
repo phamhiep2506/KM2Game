@@ -20,10 +20,4 @@
         android:layout_height="wrap_content"
         android:text="Run Game" />
 
-    <Button
-        android:id="@+id/btnStopOverlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Overlay" />
-
 </LinearLayout>
