@@ -8,7 +8,8 @@
 
 #define PORT 5555
 
-int main() {
+int create_socket() {
+
     int socket_fd, new_socket_fd;
     int option = 1;
     struct sockaddr_in address;
@@ -51,14 +52,10 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    while (1) {
+    // info connect
+    printf("New connection IP: %s, PORT: %d\n", inet_ntoa(address.sin_addr),
+           ntohs(address.sin_port));
 
-        char msg[1024];
-        printf("send: ");
-        scanf("%s", msg);
-        write(new_socket_fd, msg, sizeof(msg));
-    }
+    return new_socket_fd;
 
-    close(new_socket_fd);
-    close(socket_fd);
 }

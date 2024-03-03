@@ -68,7 +68,6 @@ public class OverlayService extends Service {
         // Pointer
         pointer = new ImageView(this);
         pointer.setImageResource(R.drawable.ic_pointer);
-        pointer.setId(123);
 
         pointerParams = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
