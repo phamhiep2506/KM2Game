@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -85,9 +86,9 @@ public class OverlayService extends Service {
         pointerParams.y = 540;
 
         // Button
-        Button button = new Button(this);
-        button.setText("Hide Mouse");
-        button.setOnClickListener(new View.OnClickListener() {
+        button = new Button(this);
+        button.setText("Hide");
+        button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.requestPointerCapture();
@@ -98,12 +99,9 @@ public class OverlayService extends Service {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
             PixelFormat.TRANSLUCENT);
-        buttonParams.gravity = Gravity.START | Gravity.TOP;
-
-        buttonParams.y = 50;
+        buttonParams.gravity = Gravity.TOP;
 
         // Add view
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
