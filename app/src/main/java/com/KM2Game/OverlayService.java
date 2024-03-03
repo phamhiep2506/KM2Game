@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
@@ -26,8 +27,10 @@ public class OverlayService extends Service {
     WindowManager wm;
     TextView status;
     ImageView pointer;
+    Button button;
     WindowManager.LayoutParams statusParams;
     WindowManager.LayoutParams pointerParams;
+    WindowManager.LayoutParams buttonParams;
 
     @Override
     public void onCreate() {
@@ -78,13 +81,35 @@ public class OverlayService extends Service {
             PixelFormat.TRANSLUCENT);
         pointerParams.gravity = Gravity.START | Gravity.TOP;
 
-        pointerParams.x = 540;
-        pointerParams.y = 1170;
+        pointerParams.x = 1170;
+        pointerParams.y = 540;
+
+        // Button
+        Button button = new Button(this);
+        button.setText("Hide Mouse");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.requestPointerCapture();
+            }
+        });
+
+        buttonParams = new WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            PixelFormat.TRANSLUCENT);
+        buttonParams.gravity = Gravity.START | Gravity.TOP;
+
+        buttonParams.y = 50;
 
         // Add view
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
         wm.addView(status, statusParams);
         wm.addView(pointer, pointerParams);
+        wm.addView(button, buttonParams);
 
         // Socket
         createSocket();

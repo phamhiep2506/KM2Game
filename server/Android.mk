@@ -7,11 +7,7 @@ LOCAL_SRC_FILES := main.c \
 				   event.c \
 				   mouse.c \
 				   touch.c
-LOCAL_C_INCLUDES := config.h \
-					socket.h \
-					event.h \
-					mouse.h \
-					touch.h
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include-all
 LOCAL_MODULE := main
 
 include $(BUILD_EXECUTABLE)

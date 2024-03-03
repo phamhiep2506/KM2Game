@@ -13,14 +13,24 @@ void send_mouse_event_to_socket(int client_socket_fd, int touch_fd, struct input
     case EV_REL:
         switch (ev->code) {
         case REL_X:
-            sprintf(buffer, "{x:%d,y:%d}", ev->value, 0);
+            last_abs_mt_position_y = last_abs_mt_position_y + ev->value;
+            if(last_abs_mt_position_y > MAX_ABS_MT_POSITION_Y) {
+                last_abs_mt_position_y = MAX_ABS_MT_POSITION_Y;
+            } else if(last_abs_mt_position_y <= 0) {
+                last_abs_mt_position_y = 0;
+            }
+            sprintf(buffer, "{x:%d,y:%d}", last_abs_mt_position_x, last_abs_mt_position_y);
             write(client_socket_fd, buffer, sizeof(buffer));
-            last_abs_mt_position_x = last_abs_mt_position_x + ev->value;
             break;
         case REL_Y:
-            sprintf(buffer, "{x:%d,y:%d}", 0, ev->value);
+            last_abs_mt_position_x = last_abs_mt_position_x + ev->value;
+            if(last_abs_mt_position_x > MAX_ABS_MT_POSITION_X) {
+                last_abs_mt_position_x = MAX_ABS_MT_POSITION_X;
+            } else if(last_abs_mt_position_x <= 0) {
+                last_abs_mt_position_x = 0;
+            }
+            sprintf(buffer, "{x:%d,y:%d}", last_abs_mt_position_x, last_abs_mt_position_y);
             write(client_socket_fd, buffer, sizeof(buffer));
-            last_abs_mt_position_y = last_abs_mt_position_y + ev->value;
             break;
         }
         break;
@@ -29,7 +39,9 @@ void send_mouse_event_to_socket(int client_socket_fd, int touch_fd, struct input
         case BTN_LEFT:
             switch(ev->value) {
                 case 1:
-                    touch_down(touch_fd, 1, last_abs_mt_position_x, last_abs_mt_position_y);
+                    printf("X: %d\n", last_abs_mt_position_x);
+                    printf("Y: %d\n", last_abs_mt_position_x);
+                    touch_down(touch_fd, 1, (MAX_ABS_MT_POSITION_X - last_abs_mt_position_x), last_abs_mt_position_y + 90);
                     break;
                 case 0:
                     touch_up(touch_fd, 1);

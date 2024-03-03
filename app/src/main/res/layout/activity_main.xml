@@ -6,14 +6,6 @@
     android:orientation="vertical"
     >
 
-    <EditText
-    android:id="@+id/inputNameGame"
-    android:layout_alignParentLeft="true"
-    android:layout_height="wrap_content"
-    android:layout_width="fill_parent"
-    android:hint="Name game"
-    android:inputType="text" />
-
     <Button
         android:id="@+id/btnRunGame"
         android:layout_width="wrap_content"

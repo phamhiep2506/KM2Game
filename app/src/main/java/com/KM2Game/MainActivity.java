@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
         // button run game
         Button btnRunGame = findViewById(R.id.btnRunGame);
         btnRunGame.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                v.requestPointerCapture();
                 startService(intent);
             }
         });
