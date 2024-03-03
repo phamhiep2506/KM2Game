@@ -24,10 +24,10 @@ void send_mouse_event_to_socket(int client_socket_fd, int touch_fd, struct input
             break;
         case REL_Y:
             last_abs_mt_position_x = last_abs_mt_position_x + ev->value;
-            if(last_abs_mt_position_x > MAX_ABS_MT_POSITION_X - 30) {
-                last_abs_mt_position_x = MAX_ABS_MT_POSITION_X - 30;
-            } else if(last_abs_mt_position_x <= 90) {
-                last_abs_mt_position_x = 90;
+            if(last_abs_mt_position_x > MAX_ABS_MT_POSITION_X) {
+                last_abs_mt_position_x = MAX_ABS_MT_POSITION_X;
+            } else if(last_abs_mt_position_x <= 0) {
+                last_abs_mt_position_x = 0;
             }
             sprintf(buffer, "{x:%d,y:%d}", last_abs_mt_position_x, last_abs_mt_position_y);
             write(client_socket_fd, buffer, sizeof(buffer));
@@ -39,8 +39,8 @@ void send_mouse_event_to_socket(int client_socket_fd, int touch_fd, struct input
         case BTN_LEFT:
             switch(ev->value) {
                 case 1:
-                    printf("X: %d\n", last_abs_mt_position_x);
-                    printf("Y: %d\n", last_abs_mt_position_x);
+                    printf("X: %d\n", MAX_ABS_MT_POSITION_X - last_abs_mt_position_x);
+                    printf("Y: %d\n", last_abs_mt_position_y);
                     touch_down(touch_fd, 0, (MAX_ABS_MT_POSITION_X - last_abs_mt_position_x), last_abs_mt_position_y);
                     break;
                 case 0:

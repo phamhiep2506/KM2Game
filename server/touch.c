@@ -1,6 +1,7 @@
 #include "event.h"
 #include "config.h"
 #include <linux/input-event-codes.h>
+#include <unistd.h>
 
 int abs_mt_tracking_id = 0;
 
