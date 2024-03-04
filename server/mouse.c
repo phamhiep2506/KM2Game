@@ -29,8 +29,9 @@ void send_mouse_to_socket(int touch_fd, int client_socket_fd,
                 sprintf(buffer, "{mouse:1,x:%d,y:%d}", last_abs_mt_position_x,
                         last_abs_mt_position_y);
                 write(client_socket_fd, buffer, sizeof(buffer));
-                if(mouse_right == true) {
-                    mt_touch_move(touch_fd, MOUSE_MOVE_SLOT, 0, last_abs_mt_position_y);
+                if (mouse_right == true) {
+                    mt_touch_move(touch_fd, MOUSE_MOVE_SLOT, 0,
+                                  last_abs_mt_position_y);
                 }
             }
             break;
@@ -45,8 +46,10 @@ void send_mouse_to_socket(int touch_fd, int client_socket_fd,
                 sprintf(buffer, "{mouse:1,x:%d,y:%d}", last_abs_mt_position_x,
                         last_abs_mt_position_y);
                 write(client_socket_fd, buffer, sizeof(buffer));
-                if(mouse_right == true) {
-                    mt_touch_move(touch_fd, MOUSE_MOVE_SLOT, MAX_ABS_MT_POSITION_X - last_abs_mt_position_x, 0);
+                if (mouse_right == true) {
+                    mt_touch_move(
+                        touch_fd, MOUSE_MOVE_SLOT,
+                        MAX_ABS_MT_POSITION_X - last_abs_mt_position_x, 0);
                 }
             }
             break;
@@ -59,7 +62,10 @@ void send_mouse_to_socket(int touch_fd, int client_socket_fd,
             case 1:
                 if (mouse == true) {
                     mouse_right = true;
-                    mt_touch_down(touch_fd, MOUSE_BTN_LEFT_SLOT, MAX_ABS_MT_POSITION_X - last_abs_mt_position_x + 1, last_abs_mt_position_y + 1);
+                    mt_touch_down(touch_fd, MOUSE_BTN_LEFT_SLOT,
+                                  MAX_ABS_MT_POSITION_X -
+                                      last_abs_mt_position_x + 1,
+                                  last_abs_mt_position_y + 1);
                 }
                 break;
             case 0:
