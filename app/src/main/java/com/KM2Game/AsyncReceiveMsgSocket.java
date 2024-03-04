@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.Intent;
+import android.view.View;
 
 public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
@@ -32,10 +33,16 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
         try {
             JSONObject pointerJson = new JSONObject(msg);
-            overlayService.updatePointer(
-                Integer.parseInt(pointerJson.getString("y")),
-                Integer.parseInt(pointerJson.getString("x"))
-            );
+            if(Integer.parseInt(pointerJson.getString("pointer")) == 0) {
+                overlayService.pointer.setVisibility(View.GONE);
+            }
+            if(Integer.parseInt(pointerJson.getString("pointer")) == 1) {
+                overlayService.pointer.setVisibility(View.VISIBLE);
+                overlayService.updatePointer(
+                    Integer.parseInt(pointerJson.getString("y")),
+                    Integer.parseInt(pointerJson.getString("x"))
+                );
+            }
         } catch (JSONException e) {
             cancel(true);
             overlayService.stopOverlay();
