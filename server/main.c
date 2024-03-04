@@ -4,6 +4,7 @@
 #include "socket.h"
 #include "event.h"
 #include "mouse.h"
+#include "touch.h"
 
 int main() {
     int client_socket_fd;
