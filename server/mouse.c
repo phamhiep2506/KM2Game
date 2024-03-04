@@ -6,8 +6,11 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int last_abs_mt_position_x = 540;
-int last_abs_mt_position_y = 1170;
+int last_abs_mt_position_x = MAX_ABS_MT_POSITION_X / 2;
+int last_abs_mt_position_y = MAX_ABS_MT_POSITION_Y / 2;
+
+bool mouse_right = false;
+
 char buffer[1024] = {0};
 
 void send_mouse_to_socket(int touch_fd, int client_socket_fd,
@@ -26,6 +29,9 @@ void send_mouse_to_socket(int touch_fd, int client_socket_fd,
                 sprintf(buffer, "{mouse:1,x:%d,y:%d}", last_abs_mt_position_x,
                         last_abs_mt_position_y);
                 write(client_socket_fd, buffer, sizeof(buffer));
+                if(mouse_right == true) {
+                    mt_touch_move(touch_fd, MOUSE_MOVE_SLOT, 0, last_abs_mt_position_y);
+                }
             }
             break;
         case REL_Y:
@@ -39,6 +45,9 @@ void send_mouse_to_socket(int touch_fd, int client_socket_fd,
                 sprintf(buffer, "{mouse:1,x:%d,y:%d}", last_abs_mt_position_x,
                         last_abs_mt_position_y);
                 write(client_socket_fd, buffer, sizeof(buffer));
+                if(mouse_right == true) {
+                    mt_touch_move(touch_fd, MOUSE_MOVE_SLOT, MAX_ABS_MT_POSITION_X - last_abs_mt_position_x, 0);
+                }
             }
             break;
         }
@@ -49,29 +58,24 @@ void send_mouse_to_socket(int touch_fd, int client_socket_fd,
             switch (ev->value) {
             case 1:
                 if (mouse == true) {
-                    write_event(touch_fd, EV_ABS, ABS_MT_SLOT, 0);
-                    write_event(touch_fd, EV_ABS, ABS_MT_TRACKING_ID,
-                                get_abs_mt_tracking_id());
-                    write_event(touch_fd, EV_KEY, BTN_TOUCH, 1);
-                    write_event(touch_fd, EV_ABS, ABS_MT_POSITION_X,
-                                MAX_ABS_MT_POSITION_X - last_abs_mt_position_x +
-                                    1);
-                    write_event(touch_fd, EV_ABS, ABS_MT_POSITION_Y,
-                                last_abs_mt_position_y + 1);
-                    write_event(touch_fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 10);
-                    write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
+                    mouse_right = true;
+                    mt_touch_down(touch_fd, MOUSE_BTN_LEFT_SLOT, MAX_ABS_MT_POSITION_X - last_abs_mt_position_x + 1, last_abs_mt_position_y + 1);
                 }
                 break;
             case 0:
                 if (mouse == true) {
-                    write_event(touch_fd, EV_ABS, ABS_MT_SLOT, 0);
-                    write_event(touch_fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
-                    write_event(touch_fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
-                    write_event(touch_fd, EV_KEY, BTN_TOUCH, 0);
-                    write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
+                    mouse_right = false;
+                    mt_touch_up(touch_fd, MOUSE_BTN_LEFT_SLOT);
                 }
                 break;
             }
+            break;
+        }
+        break;
+    case EV_SYN:
+        switch (ev->code) {
+        case SYN_REPORT:
+            write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
             break;
         }
         break;
