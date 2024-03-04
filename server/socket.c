@@ -57,5 +57,4 @@ int create_socket() {
            ntohs(address.sin_port));
 
     return new_socket_fd;
-
 }

@@ -1,11 +1,11 @@
-#include <stdio.h>
-#include <linux/input.h>
-#include <unistd.h>
-#include "socket.h"
 #include "event.h"
-#include "mouse.h"
-#include "touch.h"
 #include "keyboard.h"
+#include "mouse.h"
+#include "socket.h"
+#include "touch.h"
+#include <linux/input.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int main() {
     int client_socket_fd, keyboard_fd;
@@ -18,7 +18,7 @@ int main() {
     mouse_fd = open_event("/dev/input/event5");
     keyboard_fd = open_event("/dev/input/event6");
 
-    while(1) {
+    while (1) {
         if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {
             keyboard_toggle_mouse(keyboard_fd, client_socket_fd, &ev);
         }

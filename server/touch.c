@@ -1,5 +1,5 @@
-#include "event.h"
 #include "config.h"
+#include "event.h"
 #include <linux/input-event-codes.h>
 #include <unistd.h>
 

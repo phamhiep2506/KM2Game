@@ -1,11 +1,11 @@
 package com.KM2Game;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.content.Intent;
-import android.view.View;
 
 public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
@@ -33,15 +33,14 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
         try {
             JSONObject pointerJson = new JSONObject(msg);
-            if(Integer.parseInt(pointerJson.getString("mouse")) == 0) {
+            if (Integer.parseInt(pointerJson.getString("mouse")) == 0) {
                 overlayService.pointer.setVisibility(View.GONE);
             }
-            if(Integer.parseInt(pointerJson.getString("mouse")) == 1) {
+            if (Integer.parseInt(pointerJson.getString("mouse")) == 1) {
                 overlayService.pointer.setVisibility(View.VISIBLE);
                 overlayService.updatePointer(
                     Integer.parseInt(pointerJson.getString("y")),
-                    Integer.parseInt(pointerJson.getString("x"))
-                );
+                    Integer.parseInt(pointerJson.getString("x")));
             }
         } catch (JSONException e) {
             cancel(true);
@@ -49,5 +48,4 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
             Log.e("com.KM2Game", e.toString());
         }
     }
-
 }

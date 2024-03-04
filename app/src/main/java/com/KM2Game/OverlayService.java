@@ -15,9 +15,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Button;
 import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
@@ -64,10 +64,10 @@ public class OverlayService extends Service {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // Full screen
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                // Full screen
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
         pointerParams.gravity = Gravity.START | Gravity.TOP;
 
@@ -89,9 +89,9 @@ public class OverlayService extends Service {
             100, // Height
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // Full screen
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                // Full screen
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
         buttonParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
 
@@ -104,7 +104,8 @@ public class OverlayService extends Service {
             wm.addView(button, buttonParams);
 
             // Receive msg socket
-            AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket(this);
+            AsyncReceiveMsgSocket asyncReceiveMsgSocket =
+                new AsyncReceiveMsgSocket(this);
             asyncReceiveMsgSocket.execute();
         } else {
             stopSelf();
@@ -117,7 +118,7 @@ public class OverlayService extends Service {
     }
 
     public void stopOverlay() {
-        if(pointer != null && button != null) {
+        if (pointer != null && button != null) {
             wm.removeView(pointer);
             wm.removeView(button);
             pointer = null;
@@ -131,5 +132,4 @@ public class OverlayService extends Service {
         pointerParams.y = y;
         wm.updateViewLayout(pointer, pointerParams);
     }
-
 }
