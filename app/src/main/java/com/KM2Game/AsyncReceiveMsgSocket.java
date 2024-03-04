@@ -33,10 +33,10 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
         try {
             JSONObject pointerJson = new JSONObject(msg);
-            if(Integer.parseInt(pointerJson.getString("pointer")) == 0) {
+            if(Integer.parseInt(pointerJson.getString("mouse")) == 0) {
                 overlayService.pointer.setVisibility(View.GONE);
             }
-            if(Integer.parseInt(pointerJson.getString("pointer")) == 1) {
+            if(Integer.parseInt(pointerJson.getString("mouse")) == 1) {
                 overlayService.pointer.setVisibility(View.VISIBLE);
                 overlayService.updatePointer(
                     Integer.parseInt(pointerJson.getString("y")),
