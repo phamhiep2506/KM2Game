@@ -26,10 +26,8 @@ public class OverlayService extends Service {
     private native boolean connectSocket();
 
     WindowManager wm;
-    TextView status;
     ImageView pointer;
     Button button;
-    WindowManager.LayoutParams statusParams;
     WindowManager.LayoutParams pointerParams;
     WindowManager.LayoutParams buttonParams;
 
@@ -57,21 +55,6 @@ public class OverlayService extends Service {
             startForeground(1, notification);
         }
 
-        // Status
-        status = new TextView(this);
-
-        statusParams = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // full screen
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT);
-        statusParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
-
         // Pointer
         pointer = new ImageView(this);
         pointer.setImageResource(R.drawable.ic_pointer);
@@ -88,12 +71,11 @@ public class OverlayService extends Service {
             PixelFormat.TRANSLUCENT);
         pointerParams.gravity = Gravity.START | Gravity.TOP;
 
-        pointerParams.x = 1170;
-        pointerParams.y = 540;
+        pointerParams.x = 0;
+        pointerParams.y = 0;
 
         // Button
         button = new Button(this);
-        button.setText("Hide");
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,31 +92,37 @@ public class OverlayService extends Service {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
-        buttonParams.gravity = Gravity.LEFT | Gravity.TOP;
-
-        // Add view
-        wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-        wm.addView(status, statusParams);
-        wm.addView(pointer, pointerParams);
-        wm.addView(button, buttonParams);
+        buttonParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
 
         // Socket
         createSocket();
         if (connectSocket() == true) {
-            status.setText("Socket connected");
-            status.setTextColor(Color.GREEN);
+            // Add view
+            wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+            wm.addView(pointer, pointerParams);
+            wm.addView(button, buttonParams);
 
+            // Receive msg socket
             AsyncReceiveMsgSocket asyncReceiveMsgSocket = new AsyncReceiveMsgSocket(this);
             asyncReceiveMsgSocket.execute();
         } else {
-            status.setText("Socket disconnected");
-            status.setTextColor(Color.RED);
+            stopSelf();
         }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    public void stopOverlay() {
+        if(pointer != null && button != null) {
+            wm.removeView(pointer);
+            wm.removeView(button);
+            pointer = null;
+            button = null;
+            stopSelf();
+        }
     }
 
     public void updatePointer(int x, int y) {

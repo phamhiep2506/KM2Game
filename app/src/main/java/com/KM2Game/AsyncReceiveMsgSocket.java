@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.content.Intent;
 
 public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
@@ -18,15 +19,16 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
     protected Void doInBackground(Void... params) {
 
         Log.i("com.KM2Game", "Start AsyncTask ReceiveMsgSocket");
-        while (true) {
+
+        while (!isCancelled()) {
             publishProgress(receiveMsgSocket());
         }
+        return null;
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         String msg = values[0];
-        Log.i("com.KM2Game", msg);
 
         try {
             JSONObject pointerJson = new JSONObject(msg);
@@ -37,6 +39,8 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
                 Integer.parseInt(pointerJson.getString("x"))
             );
         } catch (JSONException e) {
+            cancel(true);
+            overlayService.stopOverlay();
             Log.e("com.KM2Game", e.toString());
         }
     }
