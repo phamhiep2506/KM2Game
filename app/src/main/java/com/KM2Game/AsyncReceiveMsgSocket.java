@@ -32,8 +32,6 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
         try {
             JSONObject pointerJson = new JSONObject(msg);
-            Log.i("com.KM2Game", "X: " + pointerJson.getString("x"));
-            Log.i("com.KM2Game", "Y: " + pointerJson.getString("y"));
             overlayService.updatePointer(
                 Integer.parseInt(pointerJson.getString("y")),
                 Integer.parseInt(pointerJson.getString("x"))

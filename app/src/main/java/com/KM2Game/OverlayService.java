@@ -65,7 +65,7 @@ public class OverlayService extends Service {
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // full screen
+            // Full screen
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
@@ -82,13 +82,14 @@ public class OverlayService extends Service {
                 v.requestPointerCapture();
             }
         });
+        button.setAlpha(0.2f);
 
         buttonParams = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            100, // Width
+            100, // Height
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // full screen
+            // Full screen
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
