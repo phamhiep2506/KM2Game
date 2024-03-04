@@ -1,3 +1,4 @@
+#include <linux/input.h>
 #include <stdbool.h>
 
 extern bool mouse;
