@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-bool mouse = true;
+bool show_mouse = true;
 
 void keyboard_toggle_mouse(int keyboard_fd, int client_socket_fd,
                            struct input_event *ev) {
@@ -16,8 +16,8 @@ void keyboard_toggle_mouse(int keyboard_fd, int client_socket_fd,
         case KEY_TOGGLE_MOUSE:
             switch (ev->value) {
             case 1:
-                mouse = !mouse;
-                if (mouse == false) {
+                show_mouse = !show_mouse;
+                if (show_mouse == false) {
                     sprintf(buffer, "{mouse:0,x:%d,y:%d}", 0, 0);
                     write(client_socket_fd, buffer, sizeof(buffer));
                 }

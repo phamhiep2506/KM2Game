@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, OverlayService.class);
 
         // button run game
-        Button btnRunGame = findViewById(R.id.btnRunGame);
-        btnRunGame.setOnClickListener(new View.OnClickListener() {
+        Button btnStart = findViewById(R.id.btnStart);
+        btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startService(intent);
