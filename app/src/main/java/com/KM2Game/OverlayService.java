@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
+import android.widget.Toast;
 
 public class OverlayService extends Service {
 
@@ -109,6 +110,7 @@ public class OverlayService extends Service {
             asyncReceiveMsgSocket.execute();
         } else {
             stopSelf();
+            Toast.makeText(this, "Error connect socket", Toast.LENGTH_SHORT).show();
         }
     }
 
