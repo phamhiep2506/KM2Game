@@ -1,21 +1,20 @@
-#include <arpa/inet.h>
+#include "config.h"
+#include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <unistd.h>
 
-#define PORT 5555
+void set_address_socket(struct sockaddr_in *address, int port) {
+    address->sin_family = AF_INET;
+    address->sin_addr.s_addr = INADDR_ANY;
+    address->sin_port = htons(port);
+}
 
-int create_socket() {
-
-    int socket_fd, new_socket_fd;
+int create_socket(struct sockaddr_in *address) {
+    int socket_fd;
     int option = 1;
-    struct sockaddr_in address;
-    socklen_t addrlen = sizeof(address);
 
-    // create socket
     if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("create socket failed");
         exit(EXIT_FAILURE);
@@ -29,15 +28,18 @@ int create_socket() {
     }
 
     // bind socket
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
-    if (bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+    if (bind(socket_fd, (struct sockaddr *)address, sizeof(*address)) < 0) {
         perror("bind socket failed");
         exit(EXIT_FAILURE);
     }
 
-    // listen socket
+    return socket_fd;
+}
+
+int listen_socket(int socket_fd, struct sockaddr_in *address) {
+    int client_socket_fd;
+    socklen_t addrlen = sizeof(&address);
+
     printf("Listening socket on port %d\n", PORT);
     if (listen(socket_fd, 1) < 0) {
         perror("listen socket failed");
@@ -45,16 +47,14 @@ int create_socket() {
     }
     printf("Socket waiting for connections...\n");
 
-    // accept socket
-    if ((new_socket_fd =
-             accept(socket_fd, (struct sockaddr *)&address, &addrlen)) < 0) {
+    if ((client_socket_fd = accept(socket_fd, (struct sockaddr *)address, &addrlen)) < 0) {
         perror("accept socket failed");
         exit(EXIT_FAILURE);
     }
 
     // info connect
-    printf("New connection IP: %s, PORT: %d\n", inet_ntoa(address.sin_addr),
-           ntohs(address.sin_port));
+    printf("New connection IP: %s, PORT: %d\n", inet_ntoa(address->sin_addr),
+           ntohs(address->sin_port));
 
-    return new_socket_fd;
+    return client_socket_fd;
 }
