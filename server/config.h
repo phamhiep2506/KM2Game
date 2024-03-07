@@ -1,1 +1,3 @@
 #define PORT 5555
+
+#define MAX_ABS_MT_TRACKING_ID 65535
