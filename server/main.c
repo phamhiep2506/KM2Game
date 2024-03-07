@@ -42,11 +42,12 @@ int main() {
     while(1) {
         if(read(mouse_fd, &ev, sizeof(ev)) == sizeof(ev)) {
             set_move_mouse_socket(touch_fd, client_socket_fd, &mouse_socket, &mouse_left_slot, &ev);
-            set_left_mouse_socket(touch_fd, &mouse_socket, &mt_touch, &mouse_left_slot, &ev);
+            set_move_left_mouse_socket(touch_fd, &mouse_socket, &mt_touch, &mouse_left_slot, &ev);
             set_move_mouse(touch_fd, &aim_mouse, &mouse_socket, &mt_touch, &mouse_move_slot, &ev);
 
             /* start custom here */
-            set_right_mouse(touch_fd, &mt_touch, &mouse_right_slot, 500, 500, &ev);
+            set_left_mouse(touch_fd, &mt_touch, &mouse_socket, &mouse_left_slot, 270, 1970, &ev);
+            set_right_mouse(touch_fd, &mt_touch, &mouse_right_slot, 520, 2180, &ev);
             /* end custom here */
         }
         if (read(keyboard_fd, &ev, sizeof(ev)) == sizeof(ev)) {

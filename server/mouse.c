@@ -117,7 +117,7 @@ void set_move_mouse_socket(int touch_fd, int client_socket_fd, struct mouse_sock
     }
 }
 
-void set_left_mouse_socket(int touch_fd, struct mouse_socket *mouse_socket, struct mt_touch *mt_touch, int *slot, struct input_event *ev) {
+void set_move_left_mouse_socket(int touch_fd, struct mouse_socket *mouse_socket, struct mt_touch *mt_touch, int *slot, struct input_event *ev) {
     switch(ev->type) {
         case EV_KEY:
             switch(ev->code) {
@@ -142,6 +142,29 @@ void set_left_mouse_socket(int touch_fd, struct mouse_socket *mouse_socket, stru
     }
 }
 
+
+void set_left_mouse(int touch_fd, struct mt_touch *mt_touch, struct mouse_socket *mouse_socket, int *slot, int x, int y, struct input_event *ev) {
+    switch(ev->type) {
+        case EV_KEY:
+            switch(ev->code) {
+                case BTN_LEFT:
+                    switch(ev->value) {
+                        case 1:
+                            if(mouse_socket->is_mouse == false) {
+                                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                            }
+                            break;
+                        case 0:
+                            if(mouse_socket->is_mouse == false) {
+                                mt_touch_up(touch_fd, mt_touch, slot);
+                            }
+                            break;
+                    }
+                    break;
+            }
+            break;
+    }
+}
 
 void set_right_mouse(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y, struct input_event *ev) {
     switch(ev->type) {

@@ -26,7 +26,9 @@ void set_move_mouse(int touch_fd, struct aim_mouse *aim_mouse, struct mouse_sock
 
 void set_move_mouse_socket(int touch_fd, int client_socket_fd, struct mouse_socket *mouse_socket, int *slot, struct input_event *ev);
 
-void set_left_mouse_socket(int touch_fd, struct mouse_socket *mouse_socket, struct mt_touch *mt_touch, int *slot, struct input_event *ev);
+void set_move_left_mouse_socket(int touch_fd, struct mouse_socket *mouse_socket, struct mt_touch *mt_touch, int *slot, struct input_event *ev);
+
+void set_left_mouse(int touch_fd, struct mt_touch *mt_touch, struct mouse_socket *mouse_socket, int *slot, int x, int y, struct input_event *ev);
 
 void set_right_mouse(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y, struct input_event *ev);
 
