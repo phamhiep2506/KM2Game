@@ -37,6 +37,7 @@ void mt_touch_up(int touch_fd, struct mt_touch *mt_touch, int *slot) {
     write_event(touch_fd, EV_ABS, ABS_MT_TOUCH_MAJOR, 0);
     write_event(touch_fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
 
+    /* touch up */
     if (mt_touch->mt_slot_total == 1) {
         write_event(touch_fd, EV_KEY, BTN_TOUCH, 0);
     }
