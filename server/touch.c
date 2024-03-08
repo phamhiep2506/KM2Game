@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 struct mt_touch {
     int mt_tracking_id;
@@ -38,6 +39,17 @@ void mt_touch_down(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, in
             break;
         }
     }
+
+    /* show array */
+    printf("{");
+    for(int i = 0; i < arr_length; i++) {
+        if(i == arr_length - 1) {
+            printf("%d", mt_touch->slot[i]);
+        } else {
+            printf("%d,", mt_touch->slot[i]);
+        }
+    }
+    printf("}\n");
 
     *slot = ramdom_slot;
     write_event(touch_fd, EV_ABS, ABS_MT_SLOT, *slot);
