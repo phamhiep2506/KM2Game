@@ -22,6 +22,15 @@ int main() {
     int mouse_right_slot;
 
     int key_wasd_slot;
+    int key_1_slot;
+    int key_2_slot;
+    int key_r_slot;
+    int key_c_slot;
+    int key_z_slot;
+    int key_space_slot;
+    int key_v_slot;
+    int key_q_slot;
+    int key_e_slot;
     /* ... */
     /* end custom here */
 
@@ -74,6 +83,15 @@ int main() {
             /* start custom here */
             set_key_wasd(touch_fd, &mt_touch, &wasd, &key_wasd_slot, 271, 460,
                          250, &ev);
+            set_key_1(touch_fd, &mt_touch, &key_1_slot, 101, 1040, &ev);
+            set_key_2(touch_fd, &mt_touch, &key_2_slot, 95, 1295, &ev);
+            set_key_r(touch_fd, &mt_touch, &key_r_slot, 67, 1800, &ev);
+            set_key_c(touch_fd, &mt_touch, &key_c_slot, 75, 1958, &ev);
+            set_key_z(touch_fd, &mt_touch, &key_z_slot, 78, 2140, &ev);
+            set_key_space(touch_fd, &mt_touch, &key_space_slot, 343, 2180, &ev);
+            set_key_v(touch_fd, &mt_touch, &key_v_slot, 157, 590, &ev);
+            set_key_q(touch_fd, &mt_touch, &key_q_slot, 688, 356, &ev);
+            set_key_e(touch_fd, &mt_touch, &key_e_slot, 685, 512, &ev);
             /* end custom here */
         }
     }

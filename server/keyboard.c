@@ -161,3 +161,263 @@ void set_key_wasd(int touch_fd, struct mt_touch *mt_touch, struct wasd *wasd,
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     }
 }
+
+void set_key_1(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_1:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_2(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_2:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_3(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_3:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_q(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_Q:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_e(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_E:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_r(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_R:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_f(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_F:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_z(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_Z:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_x(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_X:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_c(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_C:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_space(int touch_fd, struct mt_touch *mt_touch, int *slot, int x,
+                   int y, struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_SPACE:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_v(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y,
+               struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_V:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
+
+void set_key_tab(int touch_fd, struct mt_touch *mt_touch, int *slot, int x,
+                 int y, struct input_event *ev) {
+    switch (ev->type) {
+    case EV_KEY:
+        switch (ev->code) {
+        case KEY_TAB:
+            switch (ev->value) {
+            case 1:
+                mt_touch_down(touch_fd, mt_touch, slot, x, y);
+                break;
+            case 0:
+                mt_touch_up(touch_fd, mt_touch, slot);
+                break;
+            }
+            break;
+        }
+        break;
+    }
+}
