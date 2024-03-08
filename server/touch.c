@@ -1,10 +1,9 @@
-#include "event.h"
 #include "config.h"
+#include "event.h"
 #include <linux/input-event-codes.h>
-
-#include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct mt_touch {
     int mt_tracking_id;
@@ -12,7 +11,8 @@ struct mt_touch {
     int slot[MAX_ABS_MT_SLOT];
 };
 
-void mt_touch_down(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, int y) {
+void mt_touch_down(int touch_fd, struct mt_touch *mt_touch, int *slot, int x,
+                   int y) {
     /* slot */
     mt_touch->mt_slot_total = mt_touch->mt_slot_total + 1;
 
@@ -24,45 +24,45 @@ void mt_touch_down(int touch_fd, struct mt_touch *mt_touch, int *slot, int x, in
         check_duplicate = false;
         /* int r = minN + rand() % (maxN + 1 - minN) */
         ramdom_slot = 1 + rand() % (9 + 1 - 1);
-        for(int i = 0; i < arr_length; i++) {
-            if(mt_touch->slot[i] == ramdom_slot) {
+        for (int i = 0; i < arr_length; i++) {
+            if (mt_touch->slot[i] == ramdom_slot) {
                 check_duplicate = true;
                 break;
             }
         }
-    } while(check_duplicate);
+    } while (check_duplicate);
 
     /* add ramdom slot */
-    for(int i = 0; i < arr_length; i++) {
-        if(mt_touch->slot[i] == 0) {
+    for (int i = 0; i < arr_length; i++) {
+        if (mt_touch->slot[i] == 0) {
             mt_touch->slot[i] = ramdom_slot;
             break;
         }
     }
 
     /* show array */
-    printf("{");
-    for(int i = 0; i < arr_length; i++) {
-        if(i == arr_length - 1) {
-            printf("%d", mt_touch->slot[i]);
-        } else {
-            printf("%d,", mt_touch->slot[i]);
-        }
-    }
-    printf("}\n");
+    /* printf("{"); */
+    /* for (int i = 0; i < arr_length; i++) { */
+    /*     if (i == arr_length - 1) { */
+    /*         printf("%d", mt_touch->slot[i]); */
+    /*     } else { */
+    /*         printf("%d,", mt_touch->slot[i]); */
+    /*     } */
+    /* } */
+    /* printf("}\n"); */
 
     *slot = ramdom_slot;
     write_event(touch_fd, EV_ABS, ABS_MT_SLOT, *slot);
 
     /* tracking id */
     mt_touch->mt_tracking_id = mt_touch->mt_tracking_id + 1;
-    if(mt_touch->mt_tracking_id > MAX_ABS_MT_TRACKING_ID) {
+    if (mt_touch->mt_tracking_id > MAX_ABS_MT_TRACKING_ID) {
         mt_touch->mt_tracking_id = 0;
     }
     write_event(touch_fd, EV_ABS, ABS_MT_TRACKING_ID, mt_touch->mt_tracking_id);
 
     /* touch down */
-    if(mt_touch->mt_slot_total == 1) {
+    if (mt_touch->mt_slot_total == 1) {
         write_event(touch_fd, EV_KEY, BTN_TOUCH, 1);
     }
 
@@ -90,8 +90,8 @@ void mt_touch_up(int touch_fd, struct mt_touch *mt_touch, int *slot) {
 
     /* remove slot */
     int arr_length = sizeof(mt_touch->slot) / sizeof(int);
-    for(int i = 0; i < arr_length; i++) {
-        if(mt_touch->slot[i] == *slot) {
+    for (int i = 0; i < arr_length; i++) {
+        if (mt_touch->slot[i] == *slot) {
             mt_touch->slot[i] = 0;
             break;
         }

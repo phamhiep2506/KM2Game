@@ -1,9 +1,9 @@
 #include "config.h"
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/socket.h>
 
 void set_address_socket(struct sockaddr_in *address, int port) {
     address->sin_family = AF_INET;
@@ -47,7 +47,8 @@ int listen_socket(int socket_fd, struct sockaddr_in *address) {
     }
     printf("Socket waiting for connections...\n");
 
-    if ((client_socket_fd = accept(socket_fd, (struct sockaddr *)address, &addrlen)) < 0) {
+    if ((client_socket_fd =
+             accept(socket_fd, (struct sockaddr *)address, &addrlen)) < 0) {
         perror("accept socket failed");
         exit(EXIT_FAILURE);
     }
