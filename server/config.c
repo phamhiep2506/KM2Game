@@ -1,2 +1,0 @@
-int MOUSE_BTN_LEFT_SLOT = 0;
-int MOUSE_MOVE_SLOT = 0;

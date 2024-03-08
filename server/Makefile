@@ -10,8 +10,3 @@ build:
 
 clean:
 	rm -rf KM2Game libs obj
-
-debug:
-	$(ANDROID_HOME)/platform-tools/adb push \
-		libs/arm64-v8a/KM2Game \
-		/data/local/tmp
