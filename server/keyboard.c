@@ -128,35 +128,35 @@ void set_key_wasd(int touch_fd, struct mt_touch *mt_touch, struct wasd *wasd,
     }
 
     if (wasd->key_w && wasd->key_a) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x + radius, y - radius);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_w && wasd->key_d) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x + radius, y + radius);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_s && wasd->key_a) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x - radius, y - radius);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_s && wasd->key_d) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x - radius, y + radius);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_w) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x + radius + 100, y);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_s) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x - radius, y);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_a) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x, y - radius);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     } else if (wasd->key_d) {
-        usleep(10000);
+        usleep(5000);
         mt_touch_move(touch_fd, slot, x, y + radius);
         write_event(touch_fd, EV_SYN, SYN_REPORT, 0);
     }
