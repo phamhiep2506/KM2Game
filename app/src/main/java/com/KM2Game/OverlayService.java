@@ -25,6 +25,9 @@ public class OverlayService extends Service {
 
     private native void createSocket();
     private native boolean connectSocket();
+    private native void disconnectSocket();
+
+    public boolean statusSocket;
 
     WindowManager wm;
     ImageView pointer;
@@ -64,16 +67,12 @@ public class OverlayService extends Service {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-                // Full screen
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+            // Full screen
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
         pointerParams.gravity = Gravity.START | Gravity.TOP;
-
-        pointerParams.x = 0;
-        pointerParams.y = 0;
 
         // Button
         button = new Button(this);
@@ -81,6 +80,21 @@ public class OverlayService extends Service {
             @Override
             public void onClick(View v) {
                 v.requestPointerCapture();
+                if(statusSocket == false) {
+                    // Socket
+                    createSocket();
+                    if (connectSocket() == true) {
+                        statusSocket = true;
+                        // Receive msg socket
+                        AsyncReceiveMsgSocket asyncReceiveMsgSocket =
+                            new AsyncReceiveMsgSocket(OverlayService.this);
+                        asyncReceiveMsgSocket.execute();
+                    } else {
+                        statusSocket = false;
+                        Toast.makeText(OverlayService.this, "Error connect socket", Toast.LENGTH_SHORT).show();
+                        disconnectSocket();
+                    }
+                }
             }
         });
         button.setAlpha(0.2f);
@@ -90,43 +104,22 @@ public class OverlayService extends Service {
             100, // Height
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-                // Full screen
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            // Full screen
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
         buttonParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
 
-        // Socket
-        createSocket();
-        if (connectSocket() == true) {
-            // Add view
-            wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-            wm.addView(pointer, pointerParams);
-            wm.addView(button, buttonParams);
+        // Add view
+        wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+        wm.addView(pointer, pointerParams);
+        wm.addView(button, buttonParams);
 
-            // Receive msg socket
-            AsyncReceiveMsgSocket asyncReceiveMsgSocket =
-                new AsyncReceiveMsgSocket(this);
-            asyncReceiveMsgSocket.execute();
-        } else {
-            stopSelf();
-            Toast.makeText(this, "Error connect socket", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    public void stopOverlay() {
-        if (pointer != null && button != null) {
-            wm.removeView(pointer);
-            wm.removeView(button);
-            pointer = null;
-            button = null;
-            stopSelf();
-        }
     }
 
     public void updatePointer(int x, int y) {

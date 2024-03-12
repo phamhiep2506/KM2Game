@@ -38,6 +38,16 @@ Java_com_KM2Game_OverlayService_connectSocket(JNIEnv *env, jobject thiz) {
     return true;
 }
 
+JNIEXPORT void JNICALL
+Java_com_KM2Game_OverlayService_disconnectSocket(JNIEnv *env, jobject thiz) {
+    close(socket_fd);
+}
+
+JNIEXPORT void JNICALL
+Java_com_KM2Game_AsyncReceiveMsgSocket_disconnectSocket(JNIEnv *env, jobject thiz) {
+    close(socket_fd);
+}
+
 JNIEXPORT jstring JNICALL
 Java_com_KM2Game_AsyncReceiveMsgSocket_receiveMsgSocket(JNIEnv *env,
                                                         jobject thiz) {

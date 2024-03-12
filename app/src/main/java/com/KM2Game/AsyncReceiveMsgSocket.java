@@ -10,6 +10,7 @@ import org.json.JSONObject;
 public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
 
     private native String receiveMsgSocket();
+    private native void disconnectSocket();
 
     OverlayService overlayService;
     public AsyncReceiveMsgSocket(OverlayService overlayService) {
@@ -43,8 +44,9 @@ public class AsyncReceiveMsgSocket extends AsyncTask<Void, String, Void> {
                     Integer.parseInt(pointerJson.getString("x")));
             }
         } catch (JSONException e) {
+            overlayService.statusSocket = false;
             cancel(true);
-            overlayService.stopOverlay();
+            disconnectSocket();
             Log.e("com.KM2Game", e.toString());
         }
     }
