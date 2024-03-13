@@ -81,9 +81,9 @@ public class OverlayService extends Service {
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.hasPointerCapture() == false) {
-                    v.requestPointerCapture();
-                }
+
+                v.requestPointerCapture();
+
                 if(statusSocket == false) {
                     // Socket
                     createSocket();
