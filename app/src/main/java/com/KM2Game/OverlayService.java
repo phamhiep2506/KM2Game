@@ -81,7 +81,9 @@ public class OverlayService extends Service {
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.requestPointerCapture();
+                if(v.hasPointerCapture() == false) {
+                    v.requestPointerCapture();
+                }
                 if(statusSocket == false) {
                     // Socket
                     createSocket();
@@ -105,7 +107,7 @@ public class OverlayService extends Service {
             100, // Width
             100, // Height
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+            // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
             // Full screen
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
