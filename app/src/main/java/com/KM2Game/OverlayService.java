@@ -13,13 +13,10 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.core.app.NotificationCompat;
 import android.widget.Toast;
+import androidx.core.app.NotificationCompat;
 
 public class OverlayService extends Service {
 
@@ -31,9 +28,7 @@ public class OverlayService extends Service {
 
     WindowManager wm;
     ImageView pointer;
-    Button button;
-    WindowManager.LayoutParams pointerParams;
-    WindowManager.LayoutParams buttonParams;
+    WindowManager.LayoutParams params;
 
     @Override
     public void onCreate() {
@@ -63,63 +58,43 @@ public class OverlayService extends Service {
         pointer = new ImageView(this);
         pointer.setImageResource(R.drawable.ic_pointer);
 
-        pointerParams = new WindowManager.LayoutParams(
+        params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE |
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // Full screen
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE |
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                // Full screen
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT);
-        pointerParams.gravity = Gravity.START | Gravity.TOP;
-
-        // Button
-        button = new Button(this);
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                v.requestPointerCapture();
-
-                if(statusSocket == false) {
-                    // Socket
-                    createSocket();
-                    if (connectSocket() == true) {
-                        statusSocket = true;
-                        // Receive msg socket
-                        AsyncReceiveMsgSocket asyncReceiveMsgSocket =
-                            new AsyncReceiveMsgSocket(OverlayService.this);
-                        asyncReceiveMsgSocket.execute();
-                    } else {
-                        statusSocket = false;
-                        Toast.makeText(OverlayService.this, "Error connect socket", Toast.LENGTH_SHORT).show();
-                        disconnectSocket();
-                    }
-                }
-            }
-        });
-        button.setAlpha(0.2f);
-
-        buttonParams = new WindowManager.LayoutParams(
-            100, // Width
-            100, // Height
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-            // Full screen
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT);
-        buttonParams.gravity = Gravity.LEFT | Gravity.BOTTOM;
+        params.gravity = Gravity.START | Gravity.TOP;
 
         // Add view
         wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-        wm.addView(pointer, pointerParams);
-        wm.addView(button, buttonParams);
+        wm.addView(pointer, params);
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (statusSocket == false) {
+            // Socket
+            createSocket();
+            if (connectSocket() == true) {
+                statusSocket = true;
+                // Receive msg socket
+                AsyncReceiveMsgSocket asyncReceiveMsgSocket =
+                    new AsyncReceiveMsgSocket(OverlayService.this);
+                asyncReceiveMsgSocket.execute();
+            } else {
+                statusSocket = false;
+                Toast.makeText(this, "Error connect socket", Toast.LENGTH_SHORT)
+                    .show();
+                disconnectSocket();
+            }
+        }
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -128,8 +103,8 @@ public class OverlayService extends Service {
     }
 
     public void updatePointer(int x, int y) {
-        pointerParams.x = x;
-        pointerParams.y = y;
-        wm.updateViewLayout(pointer, pointerParams);
+        params.x = x;
+        params.y = y;
+        wm.updateViewLayout(pointer, params);
     }
 }
