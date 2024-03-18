@@ -31,6 +31,9 @@ int main() {
     int key_v_slot;
     int key_q_slot;
     int key_e_slot;
+    int key_x_slot;
+    int key_tab_slot;
+    int key_f_slot;
     /* ... */
     /* end custom here */
 
@@ -92,6 +95,9 @@ int main() {
             set_key_v(touch_fd, &mt_touch, &key_v_slot, 157, 590, &ev);
             set_key_q(touch_fd, &mt_touch, &key_q_slot, 688, 356, &ev);
             set_key_e(touch_fd, &mt_touch, &key_e_slot, 685, 512, &ev);
+            set_key_x(touch_fd, &mt_touch, &key_x_slot, 509, 558, &ev);
+            set_key_tab(touch_fd, &mt_touch, &key_x_slot, 94, 221, &ev);
+            set_key_f(touch_fd, &mt_touch, &key_f_slot, 626, 1598, &ev);
             /* end custom here */
         }
     }
